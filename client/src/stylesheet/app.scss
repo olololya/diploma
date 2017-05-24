@@ -1,0 +1,64 @@
+.header {
+  height: 50px;
+  background-color: #333;
+}
+
+.link {
+  display: inline-block;
+  color: #fff;
+  width: 75px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 50px;
+  text-decoration: none;
+}
+
+.link:link { color: #fff; text-decoration: none; }
+.link:active { color: #fff; text-decoration: none; }
+.link:visited { color: #fff; text-decoration: none; }
+
+.link:hover {
+  background-color: gray;
+  text-decoration: none;
+}
+
+.link-active {
+  background-color: dimgray;
+  text-decoration: none;
+}
+
+.authorization {
+    &-container {
+        height: 100vh;
+    }
+
+    &-left {
+        float: right;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    &-right {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+
+        input, button {
+            width: 250px;
+            margin: 10px 0 10px 0;
+        }
+
+        .error-label {
+            color: red;
+        }
+    }
+
+}
+
+.align-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
