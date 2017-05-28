@@ -25,8 +25,7 @@ class Authorization extends Component {
     }
 
     redirectToHome(props) {
-        const {currentUser = {}} = props.usersState;
-        if (!_.isEmpty(currentUser)) {
+        if (props.currentUserId) {
             browserHistory.push('/home')
         }
     }
@@ -40,7 +39,7 @@ class Authorization extends Component {
     }
 
     render() {
-        const {errorMessage = {}} = this.props.usersState;
+        const {errorMessage = {}, userActions} = this.props;
         const isError = !_.isEmpty(errorMessage);
         const leftText = !isError ? 'Введите данные для входа' : 'Ошибка входа! Проверьте введенные данные';
 
@@ -50,7 +49,7 @@ class Authorization extends Component {
                     <div className="authorization-left">{leftText}</div>
                 </Col>
                 <Col md={6}>
-                    <AuthorizationForm sendData={this.props.actionsUser.login}
+                    <AuthorizationForm sendData={userActions.loginUser}
                                        error={isError ? errorMessage : null}
                     />
                 </Col>
@@ -60,11 +59,12 @@ class Authorization extends Component {
 }
 
 const mapStateToProps = state => ({
-    usersState: state.users
+    currentUserId: state.users.currentUserId,
+    errorMessage: state.users.errorMessage
 });
 
 const mapDispatchToProps = dispatch => ({
-    actionsUser: bindActionCreators(userActions, dispatch)
+    userActions: bindActionCreators(userActions, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Authorization);

@@ -1,7 +1,7 @@
 import {constants, userActions} from '../actions/userActions';
 
 const initialState = {
-    currentUser: {},
+    currentUserId: null,
     errorMessage: {}
 };
 
@@ -10,7 +10,7 @@ const userReducer = (state = initialState, action) => {
         case constants.LOG_IN_SUCCESS:
             return {
                 ...state,
-                currentUser: {...action.payload},
+                currentUserId: action.payload,
                 errorMessage: {}
             };
         case constants.LOG_IN_FAILED:
@@ -21,7 +21,7 @@ const userReducer = (state = initialState, action) => {
         case constants.LOG_OUT:
             return {
                 ...state,
-                currentUser: {},
+                currentUserId: null,
                 errorMessage: null
             };
         default:

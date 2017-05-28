@@ -20,7 +20,7 @@ const loginMiddleware = store => next => (action) => {
         .then((res) => res.json())
         .then((res) => {
             if (res.password === password) {
-                createAction(`${action.type}_SUCCESS`, res);
+                createAction(`${action.type}_SUCCESS`, res._id);
             } else {
                 createAction(`${action.type}_FAILED`, {
                     errorIn: 'password',
