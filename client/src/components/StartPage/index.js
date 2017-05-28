@@ -9,9 +9,12 @@ import {bindActionCreators} from 'redux';
 import { browserHistory } from 'react-router';
 import {userActions} from '../../actions/userActions';
 import AuthorizationForm from './AuthorizationForm';
+import RegistrationForm from './RegistrationForm';
 
 import * as Utils from '../../utils.js';
 import * as _ from 'lodash';
+
+import './styles.scss';
 
 /**
  * Страница авторизации
@@ -21,7 +24,11 @@ class Authorization extends Component {
     constructor(props) {
         super(props);
 
-        this.redirectToHome = this.redirectToHome.bind(this);
+        this.state = {
+            isAuthorization: true
+        };
+
+        Utils.updateBindings(this, ['redirectToHome', 'switchTypeAction']);
     }
 
     redirectToHome(props) {
@@ -38,20 +45,33 @@ class Authorization extends Component {
         this.redirectToHome(nextProps);
     }
 
+    switchTypeAction() {
+        this.setState({ isAuthorization: !this.state.isAuthorization });
+    }
+
     render() {
         const {errorMessage = {}, userActions} = this.props;
+        const {isAuthorization} = this.state;
         const isError = !_.isEmpty(errorMessage);
-        const leftText = !isError ? 'Введите данные для входа' : 'Ошибка входа! Проверьте введенные данные';
+        const typeAction = isAuthorization ? 'входа' : 'регистрации';
+        const textLink = isAuthorization ? 'У меня нет аккаунта' : 'У меня есть аккаунт';
+        const leftText = !isError ? `Введите данные для ${typeAction}` : 'Ошибка! Проверьте введенные данные';
 
         return (
             <Row className="align-center authorization-container">
                 <Col md={6}>
-                    <div className="authorization-left">{leftText}</div>
+                    <div className="authorization-left">
+                        <div className="title">{leftText}</div>
+                        <div className="link-type-action">
+                            <a onClick={this.switchTypeAction}>{textLink}</a>
+                        </div>
+                    </div>
                 </Col>
                 <Col md={6}>
-                    <AuthorizationForm sendData={userActions.loginUser}
-                                       error={isError ? errorMessage : null}
-                    />
+                    {isAuthorization ?
+                        <AuthorizationForm sendData={userActions.loginUser} error={isError ? errorMessage : null}/> :
+                        <RegistrationForm sendData={userActions.registerUser} error={isError ? errorMessage : null}/>
+                    }
                 </Col>
             </Row>
         );

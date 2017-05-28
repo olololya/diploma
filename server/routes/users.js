@@ -12,13 +12,19 @@ export function getAllUsers(req, res) {
     });
 }
 
-export function getUserByLogin(req, res) {
-    const {login} = req.params;
+export function getUserByLoginAndPassword(req, res) {
+    const {login, password} = req.params;
 
     queries.getUserByLogin(login).then(user => {
-        res.send(user);
-    }).catch(() => {
-        res.send('Пользователь не найден');
+        if (user && user.password === password) {
+            res.send({ id: user._id});
+        } else {
+            const message = user ? 'Неверно введен пароль' : 'Пользователь не найден';
+            const type = user ? 'password' : 'login';
+            throw {message, type};
+        }
+    }).catch((error) => {
+        res.send({ error });
     });
 }
 
@@ -26,31 +32,36 @@ export function getUserById(req, res) {
     const {id} = req.params;
 
     queries.getUserById(id).then(user => {
-        res.send(user);
-    }).catch(() => {
-        res.send('Пользователь не найден');
+        if (user) {
+            res.send(user);
+        } else {
+            throw new Error('Пользователь не найден');
+        }
+    }).catch((error) => {
+        res.send({errorMessage: error.message});
     });
 }
 
 export function createUser(req, res) {
-    const newUser = req.body;
-    const lengthPassword = 3;
+    const {login, password, passwordConfirm, lengthPassword} = req.body;
+    const configLengthPassword = 3;
 
-    queries.getUserByLogin(newUser.login).then(user => {
+    queries.getUserByLogin(login).then(user => {
         if (user) {
-            throw new Error('Логин занят');
-        } else {
-            if (newUser.password.length >= lengthPassword) {
-                return queries.createUser(newUser);
-            } else {
-                throw new Error(`Минимальная длина пароля ${lengthPassword} `);
-            }
+            throw {message: 'Логин занят', type: 'login'};
         }
-    }).then(() => {
-        res.send('Регистрация завершена успешно');
-    }).catch(error => {
-        res.send(error.message);
-    });
+
+        if (lengthPassword < configLengthPassword) {
+            throw {message: `Минимальная длина пароля ${configLengthPassword} `, type: 'password'};
+        }
+
+        if (password !== passwordConfirm) {
+            throw {message: 'Пароли не совпадают', type: 'password'};
+        }
+
+        return queries.createUser(req.body);
+    }).then((user) => res.send({ id: user._id}))
+      .catch(error => res.send({ error }));
 }
 
 export function deleteUser(req, res) {
@@ -65,6 +76,14 @@ export function deleteUser(req, res) {
         res.send(`Пользователь успешно удален`);
     }).catch(error => {
         res.send(error.message);
+    });
+}
+
+export function deleteAllUser(req, res) {
+    queries.deleteAllUser().then(() => {
+        res.send(`Пользователи успешно удалены`);
+    }).catch(error => {
+        res.send('Ошибка при удалении');
     });
 }
 

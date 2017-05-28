@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 const loginMiddleware = store => next => (action) => {
     if (action.type !== constants.LOG_IN) return next(action);
 
-    const state = store.getState();
     const {login, password} = action.payload;
 
     const createAction = (typeAction, data) => {
@@ -16,22 +15,21 @@ const loginMiddleware = store => next => (action) => {
         store.dispatch(newAction);
     };
 
-    fetch(`http://localhost:3000/users/${login}`)
+    fetch(`http://localhost:3000/users/login=${login}&password=${password}`)
         .then((res) => res.json())
         .then((res) => {
-            if (res.password === password) {
-                createAction(`${action.type}_SUCCESS`, res._id);
-            } else {
-                createAction(`${action.type}_FAILED`, {
-                    errorIn: 'password',
-                    message: 'Неверно введен пароль'
-                });
+            const {id, error = null} = res;
+
+            if (error) {
+                throw error;
             }
+
+            createAction(`${action.type}_SUCCESS`, id);
         })
         .catch((error) => {
             createAction(`${action.type}_FAILED`, {
-                errorIn: 'login',
-                message: 'Пользователь с таким логином не найден'
+                errorType: error.type,
+                message: error.message
             });
         });
 };

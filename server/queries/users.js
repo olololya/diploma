@@ -24,4 +24,8 @@ export function deleteUser(id) {
     return UserModel.findById(id).remove();
 }
 
+export function deleteAllUser() {
+    return UserModel.remove({});
+}
+
 
