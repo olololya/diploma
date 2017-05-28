@@ -7,12 +7,15 @@
     "babel": "^5.8.38",
     "babel-cli": "^6.24.1",
     "body-parser": "^1.17.2",
+    "connect-mongo": "^1.3.2",
     "express": "^4.15.2",
-    "mongoose": "^4.9.10"
+    "express-session": "^1.15.3",
+    "mongoose": "^4.9.10",
+    "nconf": "^0.8.4"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "babel-node app.js",
+    "start": "babel-node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Olga Losenok",
