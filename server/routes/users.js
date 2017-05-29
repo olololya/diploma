@@ -13,7 +13,7 @@ export function getAllUsers(req, res) {
 }
 
 export function getUserByLoginAndPassword(req, res) {
-    const {login, password} = req.params;
+    const {login, password} = req.body;
 
     queries.getUserByLogin(login).then(user => {
         if (user && user.password === password) {

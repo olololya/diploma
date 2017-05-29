@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/users', usersRouters.getAllUsers);
 
-router.get('/users/login=:login&password=:password', usersRouters.getUserByLoginAndPassword);
+router.post('/users/authorization', usersRouters.getUserByLoginAndPassword);
 
 router.post('/users/registration', usersRouters.createUser);
 
