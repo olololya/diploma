@@ -3,10 +3,12 @@ import {constants} from '../actions/userActions';
 import { createAction } from '../utils';
 import getConfig from './config';
 
-const loginMiddleware = store => next => (action) => {
-    if (action.type !== constants.LOG_IN) return next(action);
+const authMiddleware = store => next => (action) => {
+    if (action.type !== constants.REGISTRATION && action.type !== constants.LOG_IN) return next(action);
 
-    fetch(`http://localhost:3000/users/authorization`, getConfig(action.payload))
+    const path = action.type === constants.REGISTRATION ? 'registration' : 'authorization';
+
+    fetch(`http://localhost:3000/users/${path}`, getConfig(action.payload))
         .then((res) => res.json())
         .then((res) => {
             const {id, error = null} = res;
@@ -25,4 +27,4 @@ const loginMiddleware = store => next => (action) => {
         });
 };
 
-export default loginMiddleware;
+export default authMiddleware;
