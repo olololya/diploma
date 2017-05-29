@@ -39,7 +39,7 @@ export default class AuthorizationForm extends Component {
 
     onClickButton() {
         const {login, password, passwordConfirm} = this.state;
-        if (login && password) {
+        if (login && password, passwordConfirm) {
             this.props.sendData({
                 login,
                 password: md5(password),
