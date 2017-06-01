@@ -8,10 +8,10 @@ const App = (props) => {
     return (
         <Grid fluid>
             <Row>
-                <Header />
+                <Header location={props.routes[1]} />
             </Row>
-            <Row>
-                <Col md={12}>
+            <Row style={{ height: '100%' }}>
+                <Col md={12} style={{ height: '100%' }}>
                     {props.children}
                 </Col>
             </Row>

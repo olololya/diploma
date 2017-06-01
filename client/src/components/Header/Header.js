@@ -11,13 +11,22 @@ class Header extends Component {
     }
 
     render() {
+        const {path} = this.props.location;
+
         return (
             <Row className="header">
                 <Col className="header-navbar">
-                    <IndexLink to="/" className="link" activeClassName="link-active">Главная</IndexLink>
-                    <Link to="/customer" className="link" activeClassName="link-active">Заказчику</Link>
-                    <Link to="/courier" className="link" activeClassName="link-active">Курьеру</Link>
-                    <Link to="/about" className="link" activeClassName="link-active">О проекте</Link>
+                    <IndexLink to="/" className="link link-main" activeClassName="link-active">Главная</IndexLink>
+
+                    {path && path === 'profile' ?
+                        <div className="profile-links-container">
+                            <IndexLink to="/profile" className="link" activeClassName="link-active">Профиль</IndexLink>
+                            <Link to="/orders" className="link" activeClassName="link-active">Заказы</Link>
+                            <Link to="/messages" className="link" activeClassName="link-active">Сообщения</Link>
+                            <Link to="/settings" className="link" activeClassName="link-active">Настройки</Link>
+                        </div>
+                        : null
+                    }
 
                     <Link to="/profile"
                           className="link link-profile"

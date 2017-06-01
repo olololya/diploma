@@ -1,0 +1,29 @@
+.profile-container {
+    color: #fff;
+    height: 100%;
+    background-color: rgba(51, 51, 51, .8);
+    padding: 0 !important;
+
+    .tip {
+        background-color: #f2863e;
+        border-radius: 5px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        color: #fff;
+        font-size: 12px;
+        text-align: center;
+        padding: 5px 0;
+        opacity: .7;
+    }
+
+    #tab {
+    }
+}
+
+.profile-blur {
+    height: 100%;
+    background-color: rgba(255, 255, 255, .5);
+    -webkit-filter: blur(2px);
+    position: absolute !important;
+}

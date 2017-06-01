@@ -1,13 +1,21 @@
 .header {
     height: 60px;
     background-color: #333;
+
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: stretch;
+
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 10;
+
+    .profile-links-container {
+        display: inline-block;
+       // margin: 0 auto;
+    }
 }
 .link {
     display: inline-block;
@@ -25,25 +33,26 @@
     text-decoration: none;
 }
 .link:active {
-    color: #61de8d;
+    color: #f2863e;
     text-decoration: none;
 }
 .link:focus {
-    color: #61de8d;
+    color: #f2863e;
     text-decoration: none;
 }
 
 .link:hover {
     text-decoration: none;
-    color: #61de8d;
+    color: #f2863e;
 }
 
 .link-active {
     text-decoration: none;
-    color: #61de8d;
+    color: #f2863e;
 }
 
 .link-profile {
+    float: right;
     width: 220px;
     margin: 0 40px 0 100px;
     background: #333 url('./profile_30.png') no-repeat 100% 40%;
@@ -51,7 +60,7 @@
 
 .link-active-profile,
 .link-profile:hover {
-    color: #61de8d;
+    color: #f2863e;
     text-decoration: none;
     background: #333 url('./profile_hover_30.png') no-repeat 100% 40%;
 }
