@@ -16,7 +16,7 @@ class Profile extends Component {
     render() {
         return (
             <Row style={{ height: '100%' }}>
-                <Col md={10} mdOffset={1} className="profile-container">
+                <Col md={10} mdOffset={1} className="center-container">
 
 
                     {this.props.children ? this.props.children :
@@ -30,7 +30,6 @@ class Profile extends Component {
                         </Col>
                     </Row>
                 </Col>
-
             </Row>
         );
     }

@@ -43,22 +43,25 @@ export function getUserById(req, res) {
 }
 
 export function createUser(req, res) {
-    const {login, password, passwordConfirm, lengthPassword} = req.body;
+    const {login, password, passwordConfirm, lengthPassword, email} = req.body;
     const configLengthPassword = 3;
-
     queries.getUserByLogin(login).then(user => {
         if (user) {
             throw {message: 'Логин занят', type: 'login'};
         }
 
+        const emailRegExp = /^\w+@\w+\.\w{2,4}$/i;
+        if (!emailRegExp.test(email)) {
+            throw {message: `Неправильно введен email`, type: 'email'};
+        }
+
         if (lengthPassword < configLengthPassword) {
-            throw {message: `Минимальная длина пароля ${configLengthPassword} `, type: 'password'};
+            throw {message: `Минимальная длина пароля ${configLengthPassword}`, type: 'password'};
         }
 
         if (password !== passwordConfirm) {
             throw {message: 'Пароли не совпадают', type: 'password'};
         }
-
         return queries.createUser(req.body);
     }).then((user) => res.send({ id: user._id}))
       .catch(error => res.send({ error }));

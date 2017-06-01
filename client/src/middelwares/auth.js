@@ -7,8 +7,9 @@ const authMiddleware = store => next => (action) => {
     if (action.type !== constants.REGISTRATION && action.type !== constants.LOG_IN) return next(action);
 
     const path = action.type === constants.REGISTRATION ? 'registration' : 'authorization';
+    const url = `http://localhost:3000/users/${path}`;
 
-    fetch(`http://localhost:3000/users/${path}`, getConfig(action.payload))
+    fetch(url, getConfig(action.payload))
         .then((res) => res.json())
         .then((res) => {
             const {id, error = null} = res;

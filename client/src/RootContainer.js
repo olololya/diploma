@@ -17,6 +17,7 @@ import Profile from './components/Profile';
 import Orders from './components/Orders';
 import Messages from './components/Messages';
 import Settings from './components/Settings';
+import Authorization from './components/Authorization';
 
 
 import rootReducer from './reducers/rootReducer';
@@ -35,6 +36,7 @@ export default () => (
                     <Route path="/messages" component={Messages} />
                     <Route path="/settings" component={Settings} />
                 </Route>
+                <Route path="authorization" component={Authorization} />
             </Route>
         </Router>
     </Provider>

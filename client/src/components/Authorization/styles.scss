@@ -1,0 +1,53 @@
+.authorization-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    .authorization-title {
+        margin-bottom: 50px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .field-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 60px;
+        margin: 10px 0 10px 0;
+
+        input, button {
+            width: 250px;
+        }
+
+        .error-input {
+            border: 1px solid #ff9e8d;
+            background-color: #e2c6bf;
+        }
+
+    }
+
+    .container-right-text {
+        text-align: right;
+    }
+
+    .link-type-action {
+        cursor: pointer;
+        margin-top: 10px;
+
+        a {
+            text-decoration: underline;
+            font-size: 14px;
+            color: #f2863e;
+
+            &:link,
+            &:visited,
+            &:active {
+                color: #f2863e;
+            }
+        }
+
+    }
+}

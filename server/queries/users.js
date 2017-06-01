@@ -13,9 +13,10 @@ export function getUserById(id) {
 }
 
 export function createUser(data) {
-        const user = new UserModel({
+    const user = new UserModel({
         login: data.login,
-        password: data.password
+        password: data.password,
+        email: data.email
     });
     return user.save();
 }

@@ -1,5 +1,10 @@
 import React from 'react';
-import {Grid, Row, Col} from 'react-bootstrap';
+import {
+    Grid,
+    Row,
+    Col
+} from 'react-bootstrap';
+
 import Header from './Header/Header';
 
 import '../stylesheet/app.scss';
@@ -17,6 +22,6 @@ const App = (props) => {
             </Row>
         </Grid>
     );
-}
+};
 
 export default App;
