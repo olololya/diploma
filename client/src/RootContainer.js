@@ -12,6 +12,7 @@ import {
 } from 'redux';
 import App from './components/App';
 import Home from './components/Home';
+import Profile from './components/Profile';
 
 import rootReducer from './reducers/rootReducer';
 
@@ -26,6 +27,7 @@ export default () => (
         <Router history={browserHistory}>
             <Route component={App} path="/">
                 <IndexRoute component={Home} />
+                <Route path="profile" component={Profile} />
             </Route>
         </Router>
     </Provider>

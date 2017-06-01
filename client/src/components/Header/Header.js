@@ -14,10 +14,16 @@ class Header extends Component {
         return (
             <Row className="header">
                 <Col className="header-navbar">
-                    <a href="#main" className="link">Главная</a>
-                    <a href="#customer" className="link">Заказчику</a>
-                    <a href="#courier" className="link">Курьеру</a>
-                    <a href="#about" className="link">О проекте</a>
+                    <IndexLink to="/" className="link" activeClassName="link-active">Главная</IndexLink>
+                    <Link to="/customer" className="link" activeClassName="link-active">Заказчику</Link>
+                    <Link to="/courier" className="link" activeClassName="link-active">Курьеру</Link>
+                    <Link to="/about" className="link" activeClassName="link-active">О проекте</Link>
+
+                    <Link to="/profile"
+                          className="link link-profile"
+                          activeClassName="link-active-profile">
+                        <span>Личный кабинет</span>
+                    </Link>
                 </Col>
             </Row>);
     }
