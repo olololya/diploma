@@ -17,3 +17,15 @@ export function createAction (store, action, typeAction, data) {
     });
     store.dispatch(newAction);
 }
+
+export function saveToLocalStorage(key, obj) {
+    localStorage.setItem(key, JSON.stringify(obj));
+}
+
+export function getFromLocalStorage(key) {
+    return JSON.parse(localStorage.getItem(key)) || null;
+}
+
+export function removeFromLocalStorage(key) {
+    localStorage.removeItem(key);
+}

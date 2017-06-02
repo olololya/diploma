@@ -31,8 +31,9 @@ class Authorization extends Component {
     }
 
     redirectToHome(props) {
-        if (props.currentUserId) {
-            browserHistory.push('/')
+        if (props.currentUser.id) {
+            browserHistory.push('/');
+            Utils.saveToLocalStorage('user', props.currentUser);
         }
     }
 
@@ -100,7 +101,7 @@ class Authorization extends Component {
 }
 
 const mapStateToProps = state => ({
-    currentUserId: state.users.currentUser.id,
+    currentUser: state.users.currentUser,
     errorMessage: state.users.errorMessage
 });
 

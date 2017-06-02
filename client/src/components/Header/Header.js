@@ -12,12 +12,15 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import { browserHistory } from 'react-router';
 import {userActions} from '../../actions/userActions';
+import * as Utils from '../../utils';
 
 import './styles.scss';
 
 class Header extends Component {
     constructor(props) {
         super(props);
+
+        this.logout = this.logout.bind(this);
     }
 
     getProfileLink(id) {
@@ -31,6 +34,22 @@ class Header extends Component {
                 <span>{text}</span>
             </Link>
         );
+    }
+
+    componentWillMount() {
+        const {currentUserId, userActions} = this.props;
+        if (!currentUserId) {
+            const user = Utils.getFromLocalStorage('user');
+            if (user) {
+                userActions.loadUser(user);
+            }
+        }
+    }
+
+    logout() {
+        this.props.userActions.logoutUser();
+        Utils.removeFromLocalStorage('user');
+        browserHistory.push('/');
     }
 
     render() {
@@ -48,6 +67,7 @@ class Header extends Component {
                             <Link to="/orders" className="link" activeClassName="link-active">Заказы</Link>
                             <Link to="/messages" className="link" activeClassName="link-active">Сообщения</Link>
                             <Link to="/settings" className="link" activeClassName="link-active">Настройки</Link>
+                            <Link to="#" className="link" onClick={this.logout}>Выйти</Link>
                         </div>
                         : null
                     }

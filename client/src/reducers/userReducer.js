@@ -8,6 +8,7 @@ const initialState = {
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         case constants.LOG_IN_SUCCESS:
+        case constants.LOAD_USER:
         case constants.REGISTRATION_SUCCESS:
             return {
                 ...state,
