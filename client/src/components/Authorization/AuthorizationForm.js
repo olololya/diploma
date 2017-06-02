@@ -4,7 +4,8 @@ import {
     Col,
     Button,
     Popover,
-    OverlayTrigger
+    OverlayTrigger,
+    FormControl
 } from 'react-bootstrap';
 import * as Utils from '../../utils.js';
 import md5 from 'md5';
@@ -22,7 +23,8 @@ export default class AuthorizationForm extends Component {
             login: '',
             password: '',
             passwordConfirm: '',
-            email: ''
+            email: '',
+            type: 'customer'
         };
 
         Utils.updateBindings(this, ['onChange', 'onClickButton', 'getInput', 'checkErrors']);
@@ -63,7 +65,7 @@ export default class AuthorizationForm extends Component {
 
 
     onClickButton() {
-        const {login, password, passwordConfirm, email} = this.state;
+        const {login, password, passwordConfirm, email, type} = this.state;
 
         let fields = [{
             name: 'login',
@@ -83,23 +85,25 @@ export default class AuthorizationForm extends Component {
                 this.checkErrors(fields);
             }
         } else {
-            if (login && password && passwordConfirm && email) {
+            if (login && password && passwordConfirm && email && type) {
                 this.props.sendData({
                     login,
                     email,
+                    type,
                     password: md5(password),
                     passwordConfirm: md5(passwordConfirm),
                     lengthPassword: password.length
                 });
             } else {
-                fields = [...fields,
-                    {
+                fields = [...fields, {
                         name: 'passwordConfirm',
                         namePrint: 'Подтверждение пароля'
-                    },
-                    {
+                    }, {
                         name: 'email',
                         namePrint: 'Email'
+                    }, {
+                        name: 'type',
+                        namePrint: 'Тип'
                     }
                 ];
 
@@ -149,6 +153,11 @@ export default class AuthorizationForm extends Component {
         );
     }
 
+    onChangeSelect(index, value) {
+        debugger
+        this.setState({ type: value });
+    }
+
     getRegistrationForm() {
         return (
             <div>
@@ -156,6 +165,18 @@ export default class AuthorizationForm extends Component {
                 {this.getInput('email', 'Введите email', 'text')}
                 {this.getInput('password', 'Введите пароль', 'password')}
                 {this.getInput('passwordConfirm', 'Подтвердите пароль', 'password')}
+
+                <Row className="field-container">
+                    <Col md={6} className="container-right-text">
+                        <label htmlFor="type">Выберете тип</label>
+                    </Col>
+                    <Col md={6}>
+                        <FormControl componentClass="select" onChange={this.onChangeSelect}>
+                            <option value="customer">Заказчик</option>
+                            <option value="courier">Курьер</option>
+                        </FormControl>
+                    </Col>
+                </Row>
             </div>
         );
     }

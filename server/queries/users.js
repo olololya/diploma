@@ -12,11 +12,16 @@ export function getUserById(id) {
     return UserModel.findById(id);
 }
 
+export function getUserByEmail(email) {
+    return UserModel.findOne({ email });
+}
+
 export function createUser(data) {
     const user = new UserModel({
         login: data.login,
         password: data.password,
-        email: data.email
+        email: data.email,
+        type: data.type
     });
     return user.save();
 }

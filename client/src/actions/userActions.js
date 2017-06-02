@@ -9,7 +9,7 @@ export const constants = {
 };
 
 export const userActions = {
-    loginUser: (userId) => ({type: constants.LOG_IN, payload: userId}),
+    loginUser: (user) => ({type: constants.LOG_IN, payload: user}),
     logoutUser: () => ({type: constants.LOG_OUT}),
     registerUser: (userData) => ({type: constants.REGISTRATION, payload: userData})
 };

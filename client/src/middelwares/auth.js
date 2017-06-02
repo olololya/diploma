@@ -12,13 +12,13 @@ const authMiddleware = store => next => (action) => {
     fetch(url, getConfig(action.payload))
         .then((res) => res.json())
         .then((res) => {
-            const {id, error = null} = res;
+            const {user, error = null} = res;
 
             if (error) {
                 throw error;
             }
 
-            createAction(store, action, `${action.type}_SUCCESS`, id);
+            createAction(store, action, `${action.type}_SUCCESS`, user);
         })
         .catch((error) => {
             createAction(store, action, `${action.type}_FAILED`, {

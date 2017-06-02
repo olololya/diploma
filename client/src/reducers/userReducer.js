@@ -1,7 +1,7 @@
 import {constants} from '../actions/userActions';
 
 const initialState = {
-    currentUserId: null,
+    currentUser: {},
     errorMessage: {}
 };
 
@@ -11,7 +11,7 @@ const userReducer = (state = initialState, action) => {
         case constants.REGISTRATION_SUCCESS:
             return {
                 ...state,
-                currentUserId: action.payload,
+                currentUser: action.payload,
                 errorMessage: {}
             };
         case constants.LOG_IN_FAILED:
@@ -23,8 +23,8 @@ const userReducer = (state = initialState, action) => {
         case constants.LOG_OUT:
             return {
                 ...state,
-                currentUserId: null,
-                errorMessage: null
+                currentUser: {},
+                errorMessage: {}
             };
         default:
             return state;

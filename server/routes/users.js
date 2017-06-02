@@ -17,7 +17,12 @@ export function getUserByLoginAndPassword(req, res) {
 
     queries.getUserByLogin(login).then(user => {
         if (user && user.password === password) {
-            res.send({ id: user._id});
+            res.send({
+                user: {
+                    id: user._id,
+                    type: user.type
+                }
+            });
         } else {
             const message = user ? 'Неверно введен пароль' : 'Пользователь не найден';
             const type = user ? 'password' : 'login';
@@ -52,7 +57,7 @@ export function createUser(req, res) {
 
         const emailRegExp = /^\w+@\w+\.\w{2,4}$/i;
         if (!emailRegExp.test(email)) {
-            throw {message: `Неправильно введен email`, type: 'email'};
+            throw {message: 'Неправильно введен email', type: 'email'};
         }
 
         if (lengthPassword < configLengthPassword) {
@@ -62,9 +67,25 @@ export function createUser(req, res) {
         if (password !== passwordConfirm) {
             throw {message: 'Пароли не совпадают', type: 'password'};
         }
-        return queries.createUser(req.body);
-    }).then((user) => res.send({ id: user._id}))
-      .catch(error => res.send({ error }));
+
+    }).then(() => {
+        queries.getUserByEmail(email).then(user => {
+            if (user) {
+                throw {message: 'Пользователь с таким email уже зарегистрирован', type: 'email'};
+            } else {
+                return queries.createUser(req.body);
+            }
+        }).then((user) => res.send({
+            user: {
+                id: user._id,
+                type: user.type
+            }
+        })).catch(error => {
+                res.send({ error });
+            });
+    }).catch(error => {
+        res.send({ error });
+    });
 }
 
 export function deleteUser(req, res) {

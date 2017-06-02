@@ -59,7 +59,7 @@ class Header extends Component {
 };
 
 const mapStateToProps = state => ({
-    currentUserId: state.users.currentUserId,
+    currentUserId: state.users.currentUser.id,
     errorMessage: state.users.errorMessage
 });
 
