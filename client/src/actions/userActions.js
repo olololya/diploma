@@ -6,10 +6,7 @@ export const constants = {
     LOG_OUT: 'LOG_OUT',
     REGISTRATION: 'REGISTRATION',
     REGISTRATION_SUCCESS: 'REGISTRATION_SUCCESS',
-    REGISTRATION_FAILED: 'REGISTRATION_FAILED',
-    GET_INFO: 'GET_INFO',
-    GET_INFO_SUCCESS: 'GET_INFO_SUCCESS',
-    GET_INFO_FAILED: 'GET_INFO_FAILED'
+    REGISTRATION_FAILED: 'REGISTRATION_FAILED'
 };
 
 export const userActions = {
@@ -27,10 +24,5 @@ export const userActions = {
         type: constants.REGISTRATION,
         payload: userData,
         url: 'http://localhost:3000/users/registration'
-    }),
-    getInfo: (id) => ({
-        type: constants.GET_INFO,
-        payload: id,
-        url: `http://localhost:3000/users/profile/${id}`
     })
 };

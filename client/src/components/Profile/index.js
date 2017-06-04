@@ -17,25 +17,21 @@ import './styles.scss';
 class Profile extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            userInfo: {}
+        }
     }
 
     componentWillMount() {
-        this.props.userActions.getInfo(this.props.params.id);
-    }
-
-    onClickButton() {
-        this.props.messageActions.send({
-            fromId: this.props.currentUserId,
-            toId: this.props.userInfo.userInfoId,
-            message: 'message',
-            date: new Date()
-        });
+        const userInfo = Utils.getUserInfoById(this.props.params.id);
+        this.setState({ userInfo });
     }
 
     render() {
         const {firstName = '', secondName = '', lastName = '', type, dateRegistration, login, email,
             bDate = 'Не указано', place = 'Не указано', numOrders = '0', rating = 'Не определено'
-        } = this.props.userInfo;
+        } = this.state.userInfo;
         const typeText = type === 'customer' ? 'Заказчик' : 'Курьер';
 
         return (
@@ -44,7 +40,6 @@ class Profile extends Component {
                     <Row className="profile-title">
                         <h3>{`${firstName} ${secondName} ${lastName}`}</h3>
                         <span>{typeText}</span>
-                        <Button type="button" onClick={this.onClickButton}>Написать сообщение</Button>
                     </Row>
                     <Row>
                         <Col md={2}>
@@ -75,8 +70,6 @@ class Profile extends Component {
 
 const mapStateToProps = state => ({
     currentUserId: state.users.currentUser.id,
-    userInfo: state.users.userInfo,
-    userInfoId: state.users.userInfo._id,
     errorMessage: state.users.errorMessage
 });
 

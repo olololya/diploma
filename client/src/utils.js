@@ -1,4 +1,4 @@
-
+import getConfig from './middelwares/config';
 
 export function updateBindings(component, functions) {
 	functions.forEach((func) => {
@@ -29,4 +29,21 @@ export function getFromLocalStorage(key) {
 
 export function removeFromLocalStorage(key) {
     localStorage.removeItem(key);
+}
+
+
+export function getUserInfoById(id) {
+    const url = `http://localhost:3000/users/profile/${id}`;
+    let user = {};
+
+    fetch(url, getConfig(id))
+        .then((res) => res.json())
+        .then((res) => {
+            user = res.data;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+    return user;
 }
