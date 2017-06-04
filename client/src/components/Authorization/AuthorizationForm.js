@@ -24,7 +24,9 @@ export default class AuthorizationForm extends Component {
             password: '',
             passwordConfirm: '',
             email: '',
-            type: 'customer'
+            type: 'customer',
+            firstName: '',
+            secondName: ''
         };
 
         Utils.updateBindings(this, ['onChange', 'onClickButton', 'getInput', 'checkErrors']);
@@ -65,7 +67,7 @@ export default class AuthorizationForm extends Component {
 
 
     onClickButton() {
-        const {login, password, passwordConfirm, email, type} = this.state;
+        const {login, password, passwordConfirm, email, type, firstName, secondName} = this.state;
 
         let fields = [{
             name: 'login',
@@ -85,11 +87,15 @@ export default class AuthorizationForm extends Component {
                 this.checkErrors(fields);
             }
         } else {
-            if (login && password && passwordConfirm && email && type) {
+            if (login && password && passwordConfirm && email && type && firstName && secondName) {
+                const date = new Date();
                 this.props.sendData({
                     login,
                     email,
                     type,
+                    firstName,
+                    secondName,
+                    dateRegistration: date.toLocaleDateString(),
                     password: md5(password),
                     passwordConfirm: md5(passwordConfirm),
                     lengthPassword: password.length
@@ -104,6 +110,12 @@ export default class AuthorizationForm extends Component {
                     }, {
                         name: 'type',
                         namePrint: 'Тип'
+                    }, {
+                        name: 'firstName',
+                        namePrint: 'Фамилия'
+                    }, {
+                        name: 'secondName',
+                        namePrint: 'Имя'
                     }
                 ];
 
@@ -154,7 +166,6 @@ export default class AuthorizationForm extends Component {
     }
 
     onChangeSelect(index, value) {
-        debugger
         this.setState({ type: value });
     }
 
@@ -162,6 +173,8 @@ export default class AuthorizationForm extends Component {
         return (
             <div>
                 {this.getInput('login', 'Введите логин', 'text')}
+                {this.getInput('firstName', 'Введите фамилию', 'text')}
+                {this.getInput('secondName', 'Введите имя', 'text')}
                 {this.getInput('email', 'Введите email', 'text')}
                 {this.getInput('password', 'Введите пароль', 'password')}
                 {this.getInput('passwordConfirm', 'Подтвердите пароль', 'password')}
@@ -186,7 +199,7 @@ export default class AuthorizationForm extends Component {
         const buttonText = isAuthorization ? 'Войти' : 'Зарегистрироваться';
 
         return (
-            <Col md={12}>
+            <Col md={12} className="form-container">
                 {isAuthorization ? this.getAuthorizationForm() : this.getRegistrationForm()}
 
                 <Row className="field-container">

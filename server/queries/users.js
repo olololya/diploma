@@ -21,7 +21,10 @@ export function createUser(data) {
         login: data.login,
         password: data.password,
         email: data.email,
-        type: data.type
+        type: data.type,
+        dateRegistration: data.dateRegistration,
+        firstName: data.firstName,
+        secondName: data.secondName
     });
     return user.save();
 }

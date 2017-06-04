@@ -54,16 +54,14 @@ class Authorization extends Component {
         const titleText = isAuthorization ? 'Вход' : 'Регистрация';
 
         return (
-            <Row>
-                <Col md={12} className="authorization-title">
-                    <Col md={6} className="container-right-text">
-                        <h1>{titleText}</h1>
-                    </Col>
-                    <Col md={6}>
-                        <div className="link-type-action">
-                            <a onClick={this.switchTypeAction}>{textLink}</a>
-                        </div>
-                    </Col>
+            <Row className="authorization-title">
+                <Col md={12}>
+                    <h1>{titleText}</h1>
+                </Col>
+                <Col md={12} >
+                    <div className="link-type-action">
+                        <a onClick={this.switchTypeAction}>{textLink}</a>
+                    </div>
                 </Col>
             </Row>
         )
