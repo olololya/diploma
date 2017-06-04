@@ -18,7 +18,7 @@ export function getUserByLoginAndPassword(req, res) {
     queries.getUserByLogin(login).then(user => {
         if (user && user.password === password) {
             res.send({
-                user: {
+                data: {
                     id: user._id,
                     type: user.type
                 }
@@ -36,14 +36,16 @@ export function getUserByLoginAndPassword(req, res) {
 export function getUserById(req, res) {
     const {id} = req.params;
 
-    queries.getUserById(id).then(user => {
-        if (user) {
-            res.send(user);
+    queries.getUserById(id).then(data => {
+        if (data) {
+            data.password = null;
+
+            res.send({ data });
         } else {
-            throw new Error('Пользователь не найден');
+            throw {message: 'Пользователь не найден'};
         }
     }).catch((error) => {
-        res.send({errorMessage: error.message});
+        res.send({ error });
     });
 }
 
@@ -76,7 +78,7 @@ export function createUser(req, res) {
                 return queries.createUser(req.body);
             }
         }).then((user) => res.send({
-            user: {
+            data: {
                 id: user._id,
                 type: user.type
             }

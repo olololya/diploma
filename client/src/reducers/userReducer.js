@@ -2,7 +2,8 @@ import {constants} from '../actions/userActions';
 
 const initialState = {
     currentUser: {},
-    errorMessage: {}
+    errorMessage: {},
+    userInfo: {}
 };
 
 const userReducer = (state = initialState, action) => {
@@ -26,6 +27,18 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 currentUser: {},
                 errorMessage: {}
+            };
+        case constants.GET_INFO_SUCCESS:
+            return {
+                ...state,
+                userInfo: action.payload,
+                errorMessage: {}
+            };
+        case constants.GET_INFO_FAILED:
+            return {
+                ...state,
+                userInfo: {},
+                errorMessage: action.payload
             };
         default:
             return state;

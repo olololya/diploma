@@ -3,12 +3,18 @@ import {
     Row,
     Col
 } from 'react-bootstrap';
-
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import { browserHistory } from 'react-router';
+import {messageActions} from '../../actions/messageActions';
 
 class Messages extends Component {
     constructor(props) {
         super(props);
+    }
 
+    componentWillMount() {
+        this.props.messageActions.getMessages(this.props.params.id);
     }
 
     render() {
@@ -22,4 +28,14 @@ class Messages extends Component {
     }
 }
 
-export default Messages;
+
+const mapStateToProps = state => ({
+    messages: state.messages.messages,
+    errorMessage: state.messages.errorMessage
+});
+
+const mapDispatchToProps = dispatch => ({
+    messageActions: bindActionCreators(messageActions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Messages);

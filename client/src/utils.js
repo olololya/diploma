@@ -13,7 +13,8 @@ export function refSaver(ref, name) {
 export function createAction (store, action, typeAction, data) {
     const newAction = Object.assign({}, action, {
         type: typeAction,
-        payload: data
+        payload: data,
+        url: null
     });
     store.dispatch(newAction);
 }

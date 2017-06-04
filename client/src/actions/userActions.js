@@ -6,12 +6,31 @@ export const constants = {
     LOG_OUT: 'LOG_OUT',
     REGISTRATION: 'REGISTRATION',
     REGISTRATION_SUCCESS: 'REGISTRATION_SUCCESS',
-    REGISTRATION_FAILED: 'REGISTRATION_FAILED'
+    REGISTRATION_FAILED: 'REGISTRATION_FAILED',
+    GET_INFO: 'GET_INFO',
+    GET_INFO_SUCCESS: 'GET_INFO_SUCCESS',
+    GET_INFO_FAILED: 'GET_INFO_FAILED'
 };
 
 export const userActions = {
-    loginUser: (user) => ({type: constants.LOG_IN, payload: user}),
-    loadUser: (user) => ({type: constants.LOAD_USER, payload: user}),
+    loginUser: (user) => ({
+        type: constants.LOG_IN,
+        payload: user,
+        url: 'http://localhost:3000/users/authorization'
+    }),
+    loadUser: (user) => ({
+        type: constants.LOAD_USER,
+        payload: user
+    }),
     logoutUser: () => ({type: constants.LOG_OUT}),
-    registerUser: (userData) => ({type: constants.REGISTRATION, payload: userData})
+    registerUser: (userData) => ({
+        type: constants.REGISTRATION,
+        payload: userData,
+        url: 'http://localhost:3000/users/registration'
+    }),
+    getInfo: (id) => ({
+        type: constants.GET_INFO,
+        payload: id,
+        url: `http://localhost:3000/users/profile/${id}`
+    })
 };

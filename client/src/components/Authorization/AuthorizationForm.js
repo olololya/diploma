@@ -29,7 +29,7 @@ export default class AuthorizationForm extends Component {
             secondName: ''
         };
 
-        Utils.updateBindings(this, ['onChange', 'onClickButton', 'getInput', 'checkErrors']);
+        Utils.updateBindings(this, ['onChange', 'onClickButton', 'getInput', 'checkErrors', 'onChangeSelect']);
     }
 
     onChange(event, field) {
@@ -165,8 +165,8 @@ export default class AuthorizationForm extends Component {
         );
     }
 
-    onChangeSelect(index, value) {
-        this.setState({ type: value });
+    onChangeSelect(event) {
+        this.setState({ type: event.target.value });
     }
 
     getRegistrationForm() {
