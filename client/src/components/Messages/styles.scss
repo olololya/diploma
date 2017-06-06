@@ -1,0 +1,15 @@
+.user-container {
+    height: 60px;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, .5);
+    color: #000;
+    font-weight: bold;
+    margin: 5px 0;
+    transition: all .3s linear;
+    line-height: 20px;
+
+    &:hover {
+        border: 1px solid #f2863e;
+        transform: scale(1.03);
+    }
+}

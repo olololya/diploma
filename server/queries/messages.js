@@ -1,7 +1,11 @@
 import MessageModel from '../models/message';
 
-export function getUsers(id) {
+export function getUsersFrom(id) {
     return MessageModel.distinct('fromId', { toId: id });
+}
+
+export function getUsersTo(id) {
+    return MessageModel.distinct('toId', { fromId: id });
 }
 
 export function getMessagesByUsers(toId, fromId) {

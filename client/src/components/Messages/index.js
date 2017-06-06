@@ -10,6 +10,8 @@ import {messageActions} from '../../actions/messageActions';
 import {userActions} from '../../actions/userActions';
 import * as Utils from '../../utils';
 
+import './styles.scss';
+
 class Messages extends Component {
     constructor(props) {
         super(props);
@@ -22,7 +24,8 @@ class Messages extends Component {
     componentWillMount() {
         const {currentUserId} = this.props;
         Utils.getFromUrl(`http://localhost:3000/messages/${currentUserId}`).then((users) => {
-            if (!users) {
+            if (users && !users.length) {
+                this.setState({ users: [] });
                 return;
             }
             for (let i = 0; i < users.length; i++) {
@@ -44,11 +47,13 @@ class Messages extends Component {
         const {id, firstName, secondName} = user;
         const {currentUserId} = this.props;
         return (
-          <div key={index} className="user-container">
-              <Link to={`/personal_area/messages/${currentUserId}-${id}`}>
-                  {`${firstName} ${secondName}`}
-              </Link>
-          </div>
+            <Row>
+                <Link to={`/personal_area/messages/${currentUserId}-${id}`}>
+                    <Col md={8} mdOffset={2} key={index} className="user-container">
+                        {`${firstName} ${secondName}`}
+                    </Col>
+                </Link>
+            </Row>
         );
     }
 
@@ -57,9 +62,9 @@ class Messages extends Component {
         return (
             <Row>
                 <Col md={12}>
-                    {users && users.map((user, index) => {
+                    {users && users.length ? users.map((user, index) => {
                         return this.renderUser(user, index);
-                    })}
+                    }) : <div>Сообщений не найдено</div>}
                 </Col>
             </Row>
         );
