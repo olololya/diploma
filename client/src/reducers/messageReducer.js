@@ -3,7 +3,7 @@ import {constants} from '../actions/messageActions';
 const initialState = {
     messages: [],
     errorMessage: {},
-    socket: new WebSocket("ws://localhost:3000")
+    socket: new WebSocket("ws://localhost:9000")
 };
 
 const messageReducer = (state = initialState, action) => {

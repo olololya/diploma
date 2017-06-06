@@ -1,7 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import './mongoose';
 import router from './routes/index';
+
+import './webSocketServer';
+import './mongoose';
+
 
 const app = express();
 const port = 3000;
