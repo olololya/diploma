@@ -1,18 +1,26 @@
 import * as queries from '../queries/messages';
 
-export function getMessages(req, res) {
-    const {id} = req.params;
-    queries.getMessagesForId(id).then(messagesArray => {
-        if (messagesArray && messagesArray.length) {
-            const messages = {};
-            for (let i = 0; i < messagesArray.length; i++) {
-                const {fromId, message, date} = messagesArray[i];
-                if (!messages[fromId]) {
-                    messages[fromId] = [];
-                }
-                messages[fromId].push({ message, date });
-            }
+export function getMessagesByUsers(req, res) {
+    const {toId, fromId} = req.body;
+    queries.getMessagesByUsers(toId, fromId).then(messages => {
+        if (messages && messages.length) {
+           // messages.map((elem) => { return { text: elem.message, date: elem.date }});
             res.send({ data: messages });
+        } else {
+            const message = 'Сообщений не найдено';
+            throw {message};
+        }
+    }).catch((error) => {
+        res.send({ error });
+    });
+}
+
+export function getUsers(req, res) {
+    const {id} = req.params;
+    queries.getUsers(id).then(users => {
+        if (users && users.length) {
+            users.map((user) => user.fromId);
+            res.send({ data: users });
         } else {
             const message = 'Сообщений не найдено';
             throw {message};

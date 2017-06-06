@@ -24,8 +24,10 @@ class Profile extends Component {
     }
 
     componentWillMount() {
-        const userInfo = Utils.getUserInfoById(this.props.params.id);
-        this.setState({ userInfo });
+        const {id} = this.props.params;
+        Utils.getFromUrl(`http://localhost:3000/users/profile/${id}`).then((userInfo) => {
+            this.setState({ userInfo });
+        });
     }
 
     render() {

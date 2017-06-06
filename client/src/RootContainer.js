@@ -16,7 +16,8 @@ import Home from './components/Home';
 import PersonalArea from './components/PersonalArea';
 import Profile from './components/Profile';
 import Orders from './components/Orders';
-import Messages from './components/Messages';
+import Messages from './components/Messages/index';
+import DetailMessages from './components/Messages/DetailMessages.js';
 import Settings from './components/Settings';
 import Authorization from './components/Authorization';
 
@@ -32,11 +33,12 @@ export default () => (
         <Router history={browserHistory}>
             <Route component={App} path="/">
                 <IndexRoute component={Home} />
-                <Route path="profile/:id" component={PersonalArea}>
-                    <IndexRoute component={Profile} />
-                    <Route path="orders" component={Orders} />
+                <Route path="personal_area" component={PersonalArea}>
+                    <Route path="profile/:id" component={Profile} />
+                    <Route path="orders/:id" component={Orders} />
                     <Route path="messages" component={Messages} />
-                    <Route path="settings" component={Settings} />
+                    <Route path="messages/:toId-:fromId" component={DetailMessages} />
+                    <Route path="settings/:id" component={Settings} />
                 </Route>
                 <Route path="authorization" component={Authorization} />
             </Route>

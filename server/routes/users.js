@@ -35,17 +35,16 @@ export function getUserByLoginAndPassword(req, res) {
 
 export function getUserById(req, res) {
     const {id} = req.params;
-
     queries.getUserById(id).then(data => {
         if (data) {
             data.password = null;
 
             res.send({ data });
         } else {
-            throw {message: 'Пользователь не найден'};
+            throw new Error('Пользователь не найден');
         }
     }).catch((error) => {
-        res.send({ error });
+        res.send(error);
     });
 }
 

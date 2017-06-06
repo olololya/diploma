@@ -13,7 +13,9 @@ router.delete('/users', usersRouters.deleteAllUser);
 
 
 router.get('/messages', messagesRouters.getAllMessages);
-router.post('/messages', messagesRouters.createMessage);
-router.post('/messages/:id', messagesRouters.getMessages);
+//router.post('/messages', messagesRouters.createMessage);
+router.post('/messages/:id', messagesRouters.getUsers);
+router.post('/messages', messagesRouters.getMessagesByUsers);
+
 
 export default router;

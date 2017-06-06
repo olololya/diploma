@@ -24,7 +24,7 @@ class Header extends Component {
     }
 
     getProfileLink(id) {
-        const path = id ? `/profile/${id}` : '/authorization';
+        const path = id ? `/personal_area` : '/authorization';
         const text = id ? 'Личный кабинет' : 'Вход / Регистрация';
 
         return (
@@ -55,19 +55,21 @@ class Header extends Component {
     render() {
         const {location, currentUserId} = this.props;
         const profileLink = this.getProfileLink(currentUserId);
-        const profileURL = `/profile/${currentUserId}`;
-
         return (
             <Row className="header">
                 <Col className="header-navbar">
                     <IndexLink to="/" className="link link-main" activeClassName="link-active">Главная</IndexLink>
 
-                    {location.path && location.path === 'profile/:id' ?
+                    {location.path && location.path === 'personal_area' ?
                         <div className="profile-links-container">
-                            <IndexLink to={profileURL} className="link" activeClassName="link-active">Профиль</IndexLink>
-                            <Link to={`${profileURL}/orders`} className="link" activeClassName="link-active">Заказы</Link>
-                            <Link to={`${profileURL}/messages`} className="link" activeClassName="link-active">Сообщения</Link>
-                            <Link to={`${profileURL}/settings`} className="link" activeClassName="link-active">Настройки</Link>
+                            <Link to={`/personal_area/profile/${currentUserId}`} className="link"
+                                  activeClassName="link-active">Профиль</Link>
+                            <Link to={`/personal_area/orders/${currentUserId}`} className="link"
+                                  activeClassName="link-active">Заказы</Link>
+                            <Link to={`/personal_area/messages`} className="link"
+                                  activeClassName="link-active">Сообщения</Link>
+                            <Link to={`/personal_area/settings/${currentUserId}`} className="link"
+                                  activeClassName="link-active">Настройки</Link>
                             <Link to="/" className="link" onClick={this.logout}>Выйти</Link>
                         </div>
                         : null

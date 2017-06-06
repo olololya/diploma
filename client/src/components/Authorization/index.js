@@ -32,7 +32,7 @@ class Authorization extends Component {
 
     redirectToHome(props) {
         if (props.currentUser.id) {
-            browserHistory.push(`/profile/${props.currentUser.id}`);
+            browserHistory.push(`/personal_area/profile/${props.currentUser.id}`);
             Utils.saveToLocalStorage('user', props.currentUser);
         }
     }

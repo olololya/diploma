@@ -32,18 +32,37 @@ export function removeFromLocalStorage(key) {
 }
 
 
-export function getUserInfoById(id) {
-    const url = `http://localhost:3000/users/profile/${id}`;
-    let user = {};
-
-    fetch(url, getConfig(id))
+export function getFromUrl(url) {
+    return fetch(url, getConfig())
         .then((res) => res.json())
         .then((res) => {
-            user = res.data;
+            return res.data;
         })
         .catch((error) => {
             console.log(error);
         });
+}
 
-    return user;
+export function getFromUrlWithBody(url, body) {
+    return fetch(url, getConfig(body))
+        .then((res) => res.json())
+        .then((res) => {
+            return res.data;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+export function getUsersMessagers(id) {
+    const url = `http://localhost:3000/users/messages/${id}`;
+
+    return fetch(url, getConfig(id))
+        .then((res) => res.json())
+        .then((res) => {
+            return res.data;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 }

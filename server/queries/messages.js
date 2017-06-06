@@ -1,7 +1,11 @@
 import MessageModel from '../models/message';
 
-export function getMessagesForId(id) {
-    return MessageModel.find({ toId: id });
+export function getUsers(id) {
+    return MessageModel.distinct('fromId', { toId: id });
+}
+
+export function getMessagesByUsers(toId, fromId) {
+    return MessageModel.find({ toId, fromId });
 }
 
 export function getAllMessages() {
