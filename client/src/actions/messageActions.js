@@ -2,21 +2,20 @@ export const constants = {
     SEND_MESSAGE: 'SEND_MESSAGE',
     SEND_MESSAGE_SUCCESS: 'SEND_MESSAGE_SUCCESS',
     SEND_MESSAGE_FAILED: 'SEND_MESSAGE_FAILED',
-    GET_MESSAGES: 'GET_MESSAGES',
-    GET_MESSAGES_SUCCESS: 'GET_MESSAGES_SUCCESS',
-    GET_MESSAGES_FAILED: 'GET_MESSAGES_FAILED'
+    LOAD_MESSAGES: 'LOAD_MESSAGES',
+    LOAD_MESSAGES_SUCCESS: 'LOAD_MESSAGES_SUCCESS',
+    LOAD_MESSAGES_FAILED: 'LOAD_MESSAGES_FAILED'
 };
 
 export const messageActions = {
-    send: (message) => ({
+    sendMessage: (data) => ({
         type: constants.SEND_MESSAGE,
-        payload: message,
-        url: 'http://localhost:3000/messages',
+        payload: data,
+        url: 'http://localhost:3000/messages/send',
         socket: true
     }),
-    getMessages: (id) => ({
-        type: constants.GET_MESSAGES,
-        payload: id,
-        url: `http://localhost:3000/messages/${id}`
+    loadMessages: (messages) => ({
+        type: constants.LOAD_MESSAGES,
+        payload: messages
     })
 };

@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import {
     Row,
-    Col
+    Col,
+    FormControl,
+    Button
 } from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -15,43 +17,60 @@ class DetailMessages extends Component {
         super(props);
 
         this.state = {
-            messages: []
+            newMessage: ''
         };
+
+        Utils.updateBindings(this, ['onChangeInput', 'onClickButton']);
     }
 
     componentWillMount() {
         const {toId, fromId} = this.props.params;
         Utils.getFromUrlWithBody(`http://localhost:3000/messages`, { toId, fromId }).then((messages) => {
-            this.setState({ messages });
+            this.props.messageActions.loadMessages(messages);
         });
     }
 
-    renderMessage(message, index) {
-        const text = message.message;
-        const date = message.date;
+    onChangeInput(event) {
+        this.setState({ newMessage: event.target.value });
+    }
 
-        return (
-          <Row key={index}>
-              <Col md={12}>{text}</Col>
-              <Col md={12}>{date}</Col>
-          </Row>
-        );
+    onClickButton() {
+        const {toId, fromId} = this.props.params;
+        this.props.messageActions.sendMessage({
+            toId,
+            fromId,
+            message: this.state.newMessage,
+            date: new Date()
+        });
+
+        this.setState({ newMessage: '' });
     }
 
     render() {
-        const {messages} = this.state;
+        const {messages = []} = this.props;
         return (
             <Row>
-                <Col md={12}>
-                    {messages.map((message, index) => {
-                        return (
-                            <div key={index}>
-                                <span>{message.message}</span>
-                                <span>{message.date}</span>
-                            </div>
-                        );
-                    })}
-                </Col>
+                <Row>
+                    <Col md={12}>
+                        {messages.map((message, index) => {
+                            return (
+                                <div key={index}>
+                                    <span>{`${index} - ${message.message} - (${message.date})`}</span>
+                                </div>
+                            );
+                        })}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6} mdOffset={3}>
+                        <FormControl type="text"
+                                     placeholder="Введите сообщение"
+                                     value={this.state.newMessage}
+                                     onChange={this.onChangeInput}
+                        />
+                        <Button onClick={this.onClickButton}>Отправить</Button>
+                    </Col>
+                </Row>
             </Row>
         );
     }

@@ -1,7 +1,7 @@
 import {constants} from '../actions/messageActions';
 
 const initialState = {
-    messages: {},
+    messages: [],
     errorMessage: {},
     socket: new WebSocket("ws://localhost:3000")
 };
@@ -9,13 +9,17 @@ const initialState = {
 const messageReducer = (state = initialState, action) => {
     switch (action.type) {
         case constants.SEND_MESSAGE_SUCCESS:
-        case constants.GET_MESSAGES_SUCCESS:
+            return {
+                ...state,
+                messages: [...state.messages, action.payload]
+            };
+        case constants.LOAD_MESSAGES:
             return {
                 ...state,
                 messages: action.payload
             };
         case constants.SEND_MESSAGE_FAILED:
-        case constants.GET_MESSAGES_FAILED:
+        case constants.LOAD_MESSAGES_FAILED:
             return {
                 ...state,
                 errorMessage: action.payload

@@ -21,3 +21,7 @@ export function createMessage(data) {
     });
     return message.save();
 }
+
+export function deleteAllMessages() {
+    return MessageModel.remove({});
+}

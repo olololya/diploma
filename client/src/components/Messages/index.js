@@ -22,6 +22,9 @@ class Messages extends Component {
     componentWillMount() {
         const {currentUserId} = this.props;
         Utils.getFromUrl(`http://localhost:3000/messages/${currentUserId}`).then((users) => {
+            if (!users) {
+                return;
+            }
             for (let i = 0; i < users.length; i++) {
                 const id = users[i];
                 Utils.getFromUrl(`http://localhost:3000/users/profile/${id}`)

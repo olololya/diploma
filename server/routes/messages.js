@@ -32,10 +32,10 @@ export function getUsers(req, res) {
 
 export function getAllMessages(req, res) {
     queries.getAllMessages().then(messages => {
-        if (!messages.length) {
-            throw new Error();
+        if (messages && messages.length) {
+            res.send({ data: messages });
         } else {
-            res.send(messages);
+            throw new Error();
         }
     }).catch(() => {
         res.send('Список пуст');
@@ -45,12 +45,20 @@ export function getAllMessages(req, res) {
 export function createMessage(req, res) {
     queries.createMessage(req.body).then(message => {
         if (message) {
-            res.send('Сообщение создано');
+            res.send({ message });
         } else {
             throw new Error('ошибка при создании');
         }
 
     }).catch(error => {
         res.send(error);
+    });
+}
+
+export function deleteAllMessages(req, res) {
+    queries.deleteAllMessages().then(() => {
+        res.send(`Сообщения успешно удалены`);
+    }).catch(error => {
+        res.send('Ошибка при удалении');
     });
 }
