@@ -1,17 +1,27 @@
 import * as queries from '../queries/messages';
 
 export function getMessagesByUsers(req, res) {
-    const {toId, fromId} = req.body;
-    queries.getMessagesByUsers(toId, fromId).then(messages => {
-        if (messages && messages.length) {
-           // messages.map((elem) => { return { text: elem.message, date: elem.date }});
-            res.send({ data: messages });
-        } else {
-            const message = 'Сообщений не найдено';
-            throw {message};
-        }
-    }).catch((error) => {
-        res.send({ error });
+    const {toId: currentUser, fromId: companionUser} = req.body;
+
+    function getMessagesFromUser(messagesToCurrUser) {
+        queries.getMessagesByUsers(companionUser, currentUser).then(messagesFromCurrUser => {
+            let messages = [];
+            if (messagesToCurrUser && messagesToCurrUser.length) {
+                messages = messages.concat(messagesToCurrUser);
+            }
+            if (messagesFromCurrUser && messagesFromCurrUser.length) {
+                messages = messages.concat(messagesFromCurrUser);
+            }
+            res.send({data: messages});
+        }).catch(() => {
+            res.send({data: []});
+        });
+    }
+
+    queries.getMessagesByUsers(currentUser, companionUser).then(messagesToCurrUser => {
+        getMessagesFromUser(messagesToCurrUser);
+    }).catch(() => {
+        getMessagesFromUser([]);
     });
 }
 

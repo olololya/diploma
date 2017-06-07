@@ -7,7 +7,7 @@ import {
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { browserHistory } from 'react-router';
+import { browserHistory, Link } from 'react-router';
 import {userActions} from '../../actions/userActions';
 import {messageActions} from '../../actions/messageActions';
 import * as Utils from '../../utils';
@@ -31,10 +31,11 @@ class Profile extends Component {
     }
 
     render() {
-        const {firstName = '', secondName = '', lastName = '', type, dateRegistration, login, email,
+        const {_id, firstName = '', secondName = '', lastName = '', type, dateRegistration, login, email,
             bDate = 'Не указано', place = 'Не указано', numOrders = '0', rating = 'Не определено'
         } = this.state.userInfo;
         const typeText = type === 'customer' ? 'Заказчик' : 'Курьер';
+        const {currentUserId} = this.props;
 
         return (
             <Row style={{ height: '100%' }}>
@@ -42,6 +43,11 @@ class Profile extends Component {
                     <Row className="profile-title">
                         <h3>{`${firstName} ${secondName} ${lastName}`}</h3>
                         <span>{typeText}</span>
+                        <br />
+                        {_id !== currentUserId ?
+                            <Link to={`/personal_area/messages/${currentUserId}-${_id}`}>Написать сообщение</Link>
+                            : null
+                        }
                     </Row>
                     <Row>
                         <Col md={2}>

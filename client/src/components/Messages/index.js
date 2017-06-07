@@ -47,9 +47,9 @@ class Messages extends Component {
         const {id, firstName, secondName} = user;
         const {currentUserId} = this.props;
         return (
-            <Row>
+            <Row key={index} >
                 <Link to={`/personal_area/messages/${currentUserId}-${id}`}>
-                    <Col md={8} mdOffset={2} key={index} className="user-container">
+                    <Col md={8} mdOffset={2} className="user-container">
                         {`${firstName} ${secondName}`}
                     </Col>
                 </Link>

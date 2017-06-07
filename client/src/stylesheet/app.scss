@@ -11,21 +11,28 @@
         color: #fff;
         height: 100%;
         background-color: rgba(51, 51, 51, .8);
-        padding: 20px 0 !important;
+        padding: 20px 0 0 0 !important;
+        display: flex;
         overflow-y: auto;
+        flex-direction: column;
+
+        .children-container {
+            flex: 1 0 auto;
+            position: relative;
+        }
 
         .tip {
             background-color: #f2863e;
             border-radius: 5px;
             margin-top: 10px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
+            position: relative;
+            top: 100%;
             color: #fff;
             font-size: 12px;
             text-align: center;
             padding: 5px 0;
             opacity: .7;
+            flex: 0 0 auto;
         }
     }
 }

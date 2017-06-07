@@ -13,7 +13,9 @@ export default class PersonalArea extends Component {
         return (
             <Row style={{ height: '100%' }}>
                 <Col md={10} mdOffset={1} className="center-container ">
-                    {this.props.children}
+                    <Row className="children-container">
+                        {this.props.children}
+                    </Row>
                     <Row>
                         <Col md={12} className="tip">
                             <span>Личный кабинет. Здесь вы можете просматривать и управлять Вашими заказами,
