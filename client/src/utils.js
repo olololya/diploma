@@ -43,6 +43,17 @@ export function getFromUrl(url) {
         });
 }
 
+export function getFromUrlGET(url) {
+    return fetch(url)
+        .then((res) => res.json())
+        .then((res) => {
+            return res;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
 export function getFromUrlWithBody(url, body) {
     return fetch(url, getConfig(body))
         .then((res) => res.json())

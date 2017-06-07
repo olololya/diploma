@@ -8,7 +8,7 @@ export function getAllUsers(req, res) {
             res.send(users);
         }
     }).catch(() => {
-        res.send('Список пуст');
+        res.send([]);
     });
 }
 

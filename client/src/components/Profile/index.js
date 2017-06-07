@@ -19,7 +19,8 @@ class Profile extends Component {
         super(props);
 
         this.state = {
-            userInfo: {}
+            userInfo: {},
+            users: []
         }
     }
 
@@ -28,48 +29,80 @@ class Profile extends Component {
         Utils.getFromUrl(`http://localhost:3000/users/profile/${id}`).then((userInfo) => {
             this.setState({ userInfo });
         });
+
+        Utils.getFromUrlGET('http://localhost:3000/users').then((users) => {
+            this.setState({ users });
+        });
+    }
+
+    renderListOfUsers(users) {
+        if (users.length) {
+            const {currentUserId} = this.props;
+            return users.map((user, index) => {
+                if (user._id === currentUserId) {
+                    return null;
+                }
+                return (
+                    <Row key={index} >
+                        <Link to={`/personal_area/messages/${currentUserId}-${user._id}`}>
+                            <Col md={8} mdOffset={2} className="user-container">
+                                {`${user.firstName} ${user.secondName}`}
+                            </Col>
+                        </Link>
+                    </Row>
+                );
+            });
+        }
+
+        return 'Список пуст';
     }
 
     render() {
+        const {userInfo, users = []} = this.state;
         const {_id, firstName = '', secondName = '', lastName = '', type, dateRegistration, login, email,
             bDate = 'Не указано', place = 'Не указано', numOrders = '0', rating = 'Не определено'
-        } = this.state.userInfo;
+        } = userInfo;
         const typeText = type === 'customer' ? 'Заказчик' : 'Курьер';
         const {currentUserId} = this.props;
 
         return (
             <Row style={{ height: '100%' }}>
-                <Col md={12} className="profile-container">
-                    <Row className="profile-title">
-                        <h3>{`${firstName} ${secondName} ${lastName}`}</h3>
-                        <span>{typeText}</span>
-                        <br />
-                        {_id !== currentUserId ?
-                            <Link to={`/personal_area/messages/${currentUserId}-${_id}`}>Написать сообщение</Link>
-                            : null
-                        }
-                    </Row>
-                    <Row>
-                        <Col md={2}>
-                            <Row>Логин:</Row>
-                            <Row>Email:</Row>
-                            <Row>Дата регистрации:</Row>
-                            <Row>Дата рождения:</Row>
-                            <Row>Местонахождение:</Row>
-                            <Row>Количество заказов:</Row>
-                            <Row>Рейтинг:</Row>
-                        </Col>
-                        <Col md={2}>
-                            <Row>{login}</Row>
-                            <Row>{email}</Row>
-                            <Row>{dateRegistration}</Row>
-                            <Row>{bDate}</Row>
-                            <Row>{place}</Row>
-                            <Row>{numOrders}</Row>
-                            <Row>{rating}</Row>
-                        </Col>
-                    </Row>
-                </Col>
+                <Row>
+                    <Col md={12} className="profile-container">
+                        <Row className="profile-title">
+                            <h3>{`${firstName} ${secondName} ${lastName}`}</h3>
+                            <span>{typeText}</span>
+                            <br />
+                            {_id !== currentUserId ?
+                                <Link to={`/personal_area/messages/${currentUserId}-${_id}`}>Написать сообщение</Link>
+                                : null
+                            }
+                        </Row>
+                        <Row>
+                            <Col md={2}>
+                                <Row>Логин:</Row>
+                                <Row>Email:</Row>
+                                <Row>Дата регистрации:</Row>
+                                <Row>Дата рождения:</Row>
+                                <Row>Местонахождение:</Row>
+                                <Row>Количество заказов:</Row>
+                                <Row>Рейтинг:</Row>
+                            </Col>
+                            <Col md={2}>
+                                <Row>{login}</Row>
+                                <Row>{email}</Row>
+                                <Row>{dateRegistration}</Row>
+                                <Row>{bDate}</Row>
+                                <Row>{place}</Row>
+                                <Row>{numOrders}</Row>
+                                <Row>{rating}</Row>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+                <Row>
+                    {this.renderListOfUsers(users)}
+                </Row>
             </Row>
         );
     }
