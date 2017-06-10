@@ -12,7 +12,9 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import { browserHistory } from 'react-router';
 import {userActions} from '../../actions/userActions';
+import {messageActions} from '../../actions/messageActions';
 import * as Utils from '../../utils';
+import Notification from '../Notification';
 
 import './styles.scss';
 
@@ -20,7 +22,14 @@ class Header extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            notofication: null
+        };
+
         this.logout = this.logout.bind(this);
+        this.incomeFromSocket = this.incomeFromSocket.bind(this);
+        this.onCloseSocket = this.onCloseSocket.bind(this);
+        this.createSocket = this.createSocket.bind(this);
     }
 
     getProfileLink(id) {
@@ -36,6 +45,43 @@ class Header extends Component {
         );
     }
 
+    incomeFromSocket(event) {
+        const {currentUserId, messageActions} = this.props;
+        const message = JSON.parse(event.data);
+        if (message.fromId === currentUserId || message.toId === currentUserId) {
+            messageActions.addMessage(message);
+            this.setState({ notification: 'У вас новое сообщение!' });
+            setTimeout(() => {
+                this.setState({ notification: null });
+            }, 3000);
+        }
+    }
+
+    onCloseSocket(event) {
+        if (event.wasClean) {
+            console.log('Соединение закрыто чисто');
+        } else {
+            console.log('Обрыв соединения');
+        }
+        console.log('Код: ' + event.code + ' причина: ' + event.reason);
+
+
+        this.createSocket();
+    }
+
+    createSocket() {
+        let socket = null;
+        while (!socket) {
+            console.log('Попытка соединения...');
+            socket = new WebSocket("ws://localhost:9000");
+        }
+        console.log('Соединение установлено');
+
+        this.props.messageActions.createSocket(socket);
+        socket.addEventListener('message', this.incomeFromSocket);
+        socket.addEventListener('close', this.onCloseSocket);
+    }
+
     componentWillMount() {
         const {currentUserId, userActions} = this.props;
         if (!currentUserId) {
@@ -44,6 +90,8 @@ class Header extends Component {
                 userActions.loadUser(user);
             }
         }
+
+        this.createSocket();
     }
 
     logout() {
@@ -53,6 +101,7 @@ class Header extends Component {
     }
 
     render() {
+        const {notification} = this.state;
         const {location, currentUserId} = this.props;
         const profileLink = this.getProfileLink(currentUserId);
         return (
@@ -77,17 +126,20 @@ class Header extends Component {
 
                     {profileLink}
                 </Col>
+                <Notification text={notification} />
             </Row>);
     }
 };
 
 const mapStateToProps = state => ({
     currentUserId: state.users.currentUser.id,
-    errorMessage: state.users.errorMessage
+    errorMessage: state.users.errorMessage,
+    socket: state.messages.socket
 });
 
 const mapDispatchToProps = dispatch => ({
-    userActions: bindActionCreators(userActions, dispatch)
+    userActions: bindActionCreators(userActions, dispatch),
+    messageActions: bindActionCreators(messageActions, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

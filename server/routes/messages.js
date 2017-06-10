@@ -27,32 +27,37 @@ export function getMessagesByUsers(req, res) {
 
 export function getUsers(req, res) {
     const {id} = req.params;
-    queries.getUsersFrom(id).then(users => {
-        if (users && users.length) {
-            users.map((user) => user.fromId);
 
-            queries.getUsersTo(id).then(usersTo => {
-                if (usersTo && usersTo.length) {
-                    usersTo.map((user) => user.toId);
+    function getUsersTo(usersFrom) {
+        queries.getUsersTo(id).then(usersTo => {
+            let users = [];
+            if (usersFrom && usersFrom.length) {
+                users = users.concat(usersFrom);
+            }
+            if (usersTo && usersTo.length) {
+                users = users.concat(usersTo);
+            }
 
-                    let usersAll = users.concat(usersTo);
-                    const obj = {};
-                    for(let i = 0; i < usersAll.length; i++) {
-                        const user = usersAll[i];
-                        obj[user] = true;
-                    }
-                    usersAll = Object.keys(obj);
-
-                    res.send({ data: usersAll });
-                } else {
-                    res.send({ data: users });
+            if (users.length) {
+                const obj = {};
+                for(let i = 0; i < users.length; i++) {
+                    const user = users[i];
+                    obj[user] = true;
                 }
-            });
-        } else {
-            res.send({ data: [] });
-        }
-    }).catch((error) => {
-        res.send({ error });
+                users = Object.keys(obj);
+            }
+
+            res.send({data: users});
+        }).catch(() => {
+            res.send({data: []});
+        });
+
+    }
+
+    queries.getUsersFrom(id).then(usersFrom => {
+        getUsersTo(usersFrom);
+    }).catch(() => {
+        getUsersTo([]);
     });
 }
 

@@ -3,12 +3,13 @@ import {constants} from '../actions/messageActions';
 const initialState = {
     messages: [],
     errorMessage: {},
-    socket: new WebSocket("ws://localhost:9000")
+    socket: null
 };
 
 const messageReducer = (state = initialState, action) => {
     switch (action.type) {
         case constants.SEND_MESSAGE_SUCCESS:
+        case constants.ADD_MESSAGE:
             return {
                 ...state,
                 messages: [...state.messages, action.payload]
@@ -23,6 +24,11 @@ const messageReducer = (state = initialState, action) => {
             return {
                 ...state,
                 errorMessage: action.payload
+            };
+        case constants.CREATE_SOCKET:
+            return {
+                ...state,
+                socket: action.payload
             };
         default:
             return state;
