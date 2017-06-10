@@ -12,6 +12,11 @@ export function getMessagesByUsers(req, res) {
             if (messagesFromCurrUser && messagesFromCurrUser.length) {
                 messages = messages.concat(messagesFromCurrUser);
             }
+
+            messages.sort((a, b) => {
+                return new Date(a.date) - new Date(b.date);
+            });
+
             res.send({data: messages});
         }).catch(() => {
             res.send({data: []});

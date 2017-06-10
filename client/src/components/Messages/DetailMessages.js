@@ -33,9 +33,6 @@ class DetailMessages extends Component {
     componentWillMount() {
         const {toId, fromId} = this.props.params;
         Utils.getFromUrlWithBody(`http://localhost:3000/messages`, { toId, fromId }).then((messages) => {
-            for(let i = 0; i < messages.length; i++) {
-                messages[i].status = 'old';
-            }
             this.props.messageActions.loadMessages(messages);
         });
 
@@ -59,7 +56,7 @@ class DetailMessages extends Component {
             toId,
             fromId,
             message: this.state.newMessage,
-            date: date.format('hh:mm:ss, DD.MM.YYYY'),
+            date: date.format('HH:mm:ss DD.MM.YYYY'),
             status: 'new'
         });
 
@@ -80,6 +77,7 @@ class DetailMessages extends Component {
 
     componentDidMount() {
         this.scrollToBottom();
+
     }
 
     renderMessage(data, index) {
