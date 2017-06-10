@@ -21,7 +21,8 @@ export function createMessage(data) {
         fromId: data.fromId,
         toId: data.toId,
         message: data.message,
-        date: data.date
+        date: data.date,
+        status: data.status
     });
     return message.save();
 }

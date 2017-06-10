@@ -16,12 +16,12 @@ export default class PersonalArea extends Component {
                     <Row className="children-container">
                         {this.props.children}
                     </Row>
-                    <Row>
-                        <Col md={12} className="tip">
-                            <span>Личный кабинет. Здесь вы можете просматривать и управлять Вашими заказами,
-                                использовать сервис "Личные сообщения",изменить профиль</span>
-                        </Col>
-                    </Row>
+                    {/*<Row>*/}
+                        {/*<Col md={12} className="tip">*/}
+                            {/*<span>Личный кабинет. Здесь вы можете просматривать и управлять Вашими заказами,*/}
+                                {/*использовать сервис "Личные сообщения",изменить профиль</span>*/}
+                        {/*</Col>*/}
+                    {/*</Row>*/}
                 </Col>
             </Row>
         );

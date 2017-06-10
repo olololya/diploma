@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import {
     Row,
     Col,
@@ -11,6 +12,7 @@ import {bindActionCreators} from 'redux';
 import { browserHistory, Link } from 'react-router';
 import {messageActions} from '../../actions/messageActions';
 import {userActions} from '../../actions/userActions';
+import scrollToComponent from 'react-scroll-to-component';
 import * as Utils from '../../utils';
 
 import Moment from 'moment';
@@ -25,7 +27,7 @@ class DetailMessages extends Component {
             companionUserInfo: {}
         };
 
-        Utils.updateBindings(this, ['onChangeInput', 'onClickButton']);
+        Utils.updateBindings(this, ['onChangeInput', 'onClickButton', 'scrollToBottom']);
     }
 
     componentWillMount() {
@@ -64,6 +66,22 @@ class DetailMessages extends Component {
         this.setState({ newMessage: '' });
     }
 
+    scrollToBottom() {
+        if (this.inputContainer) {
+            const element = ReactDOM.findDOMNode(this.inputContainer);
+            element.scrollIntoView();
+        }
+    }
+
+    componentDidUpdate() {
+        this.scrollToBottom();
+
+    }
+
+    componentDidMount() {
+        this.scrollToBottom();
+    }
+
     renderMessage(data, index) {
         const {fromId, toId, message, date} = data;
         const {currentUserInfo, companionUserInfo} = this.state;
@@ -71,7 +89,7 @@ class DetailMessages extends Component {
             : `${companionUserInfo.firstName} ${companionUserInfo.secondName}`;
 
         return (
-            <Row key={index} className="message-container">
+            <div key={index} className="message-container">
                 <Row className="message-title">
                     <Link to={`/personal_area/profile/${toId}`}>
                         <Col className="user-name">{userName}</Col>
@@ -81,7 +99,7 @@ class DetailMessages extends Component {
                 <Row>
                     <Col md={12} className="message">{message}</Col>
                 </Row>
-            </Row>
+            </div>
         );
     }
 
@@ -92,20 +110,22 @@ class DetailMessages extends Component {
                 <Col md={8} mdOffset={2} className="messages-container">
                     {messages.map((message, index) => this.renderMessage(message, index))}
                 </Col>
-                <Row className="input-container">
-                    <Col md={6}>
-                        <InputGroup>
-                            <FormControl type="text"
-                                         placeholder="Введите сообщение"
-                                         value={this.state.newMessage}
-                                         onChange={this.onChangeInput}
-                            />
-                            <InputGroup.Button>
-                                <Button onClick={this.onClickButton}>Отправить</Button>
-                            </InputGroup.Button>
-                        </InputGroup>
-                    </Col>
-                </Row>
+                <Col md={8}
+                     mdOffset={2}
+                     className="input-container"
+                     ref={(ref) => this.inputContainer = ref}
+                >
+                    <InputGroup>
+                        <FormControl componentClass="textarea"
+                                     placeholder="Введите сообщение"
+                                     value={this.state.newMessage}
+                                     onChange={this.onChangeInput}
+                        />
+                        <InputGroup.Button>
+                            <Button onClick={this.onClickButton}>Отправить</Button>
+                        </InputGroup.Button>
+                    </InputGroup>
+                </Col>
             </Row>
         );
     }
