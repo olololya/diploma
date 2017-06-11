@@ -50,10 +50,14 @@ class Header extends Component {
         const message = JSON.parse(event.data);
         if (message.fromId === currentUserId || message.toId === currentUserId) {
             messageActions.addMessage(message);
-            this.setState({ notification: 'У вас новое сообщение!' });
-            setTimeout(() => {
-                this.setState({ notification: null });
-            }, 3000);
+            Utils.getFromUrl(`http://localhost:3000/users/profile/${message.fromId}`).then((userInfo) => {
+                const {firstName, secondName} = userInfo;
+                const userName = `${secondName} ${firstName}`;
+                this.setState({ notification: `Новое сообщение от пользователя ${userName}` });
+                setTimeout(() => {
+                    this.setState({ notification: null });
+                }, 3000);
+            });
         }
     }
 
