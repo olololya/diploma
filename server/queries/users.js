@@ -1,7 +1,7 @@
 import UserModel from '../models/user';
 
 export function getAllUsers() {
-    return UserModel.find();
+    return UserModel.find().exec();
 }
 
 export function getUserByLogin(login) {

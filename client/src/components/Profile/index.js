@@ -44,9 +44,9 @@ class Profile extends Component {
                 }
                 return (
                     <Row key={index} >
-                        <Link to={`/personal_area/messages/${currentUserId}-${user._id}`}>
+                        <Link to={`/personal_area/messages/${user._id}`}>
                             <Col md={8} mdOffset={2} className="user-container">
-                                {`${user.firstName} ${user.secondName}`}
+                                {`${user.secondName} ${user.firstName}`}
                             </Col>
                         </Link>
                     </Row>
@@ -74,7 +74,7 @@ class Profile extends Component {
                             <span>{typeText}</span>
                             <br />
                             {_id !== currentUserId ?
-                                <Link to={`/personal_area/messages/${currentUserId}-${_id}`}>Написать сообщение</Link>
+                                <Link to={`/personal_area/messages/${_id}`}>Написать сообщение</Link>
                                 : null
                             }
                         </Row>

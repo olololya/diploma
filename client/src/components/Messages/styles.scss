@@ -8,10 +8,18 @@
     transition: all .3s linear;
     line-height: 20px;
 
+    .new-message-text {
+        color: #f2863e;
+    }
+
     &:hover {
-        border: 1px solid #f2863e;
+        border: 1px solid #333;
         transform: scale(1.03);
     }
+}
+
+.new-message {
+    border: 1px solid #f2863e;
 }
 
 .detail-messages-container {

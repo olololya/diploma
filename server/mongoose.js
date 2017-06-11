@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 mongoose.connect('mongodb://localhost/diploma');
+mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 
 db.on('error', function (err) {

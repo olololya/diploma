@@ -14,7 +14,8 @@ router.delete('/users', usersRouters.deleteAllUser);
 
 router.get('/messages', messagesRouters.getAllMessages);
 router.post('/messages/send', messagesRouters.createMessage);
-router.post('/messages/:id', messagesRouters.getUsers);
+router.get('/messages/user/:idCurrentUser', messagesRouters.getUsers);
+router.post('/messages/setToOld', messagesRouters.setMessageToOld);
 router.post('/messages', messagesRouters.getMessagesByUsers);
 router.delete('/messages', messagesRouters.deleteAllMessages);
 

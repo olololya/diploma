@@ -1,7 +1,7 @@
 import * as queries from '../queries/messages';
 
 export function getMessagesByUsers(req, res) {
-    const {toId: currentUser, fromId: companionUser} = req.body;
+    const {currentUserId: currentUser, id: companionUser} = req.body;
 
     function getMessagesFromUser(messagesToCurrUser) {
         queries.getMessagesByUsers(companionUser, currentUser).then(messagesFromCurrUser => {
@@ -30,11 +30,21 @@ export function getMessagesByUsers(req, res) {
     });
 }
 
+export function setMessageToOld(req, res) {
+    const {id} = req.body;
+
+    queries.setMessageToOld(id).then((data) => {
+        res.send({data});
+    }).catch((error) => {
+        res.send({error});
+    });
+}
+
 export function getUsers(req, res) {
-    const {id} = req.params;
+    const {idCurrentUser} = req.params;
 
     function getUsersTo(usersFrom) {
-        queries.getUsersTo(id).then(usersTo => {
+        queries.getUsersTo(idCurrentUser).then(usersTo => {
             let users = [];
             if (usersFrom && usersFrom.length) {
                 users = users.concat(usersFrom);
@@ -52,14 +62,14 @@ export function getUsers(req, res) {
                 users = Object.keys(obj);
             }
 
-            res.send({data: users});
+            res.send(users);
         }).catch(() => {
-            res.send({data: []});
+            res.send([]);
         });
 
     }
 
-    queries.getUsersFrom(id).then(usersFrom => {
+    queries.getUsersFrom(idCurrentUser).then(usersFrom => {
         getUsersTo(usersFrom);
     }).catch(() => {
         getUsersTo([]);

@@ -12,6 +12,10 @@ export function getMessagesByUsers(toId, fromId) {
     return MessageModel.find({ toId, fromId });
 }
 
+export function setMessageToOld(_id) {
+    return MessageModel.update({ _id }, {$set: {status: 'old'}});
+}
+
 export function getAllMessages() {
     return MessageModel.find();
 }

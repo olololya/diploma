@@ -12,7 +12,6 @@ import {bindActionCreators} from 'redux';
 import { browserHistory, Link } from 'react-router';
 import {messageActions} from '../../actions/messageActions';
 import {userActions} from '../../actions/userActions';
-import scrollToComponent from 'react-scroll-to-component';
 import * as Utils from '../../utils';
 
 import Moment from 'moment';
@@ -27,22 +26,31 @@ class DetailMessages extends Component {
             companionUserInfo: {}
         };
 
-        Utils.updateBindings(this, ['onChangeInput', 'onClickButton', 'scrollToBottom']);
+        Utils.updateBindings(this, ['onChangeInput', 'onClickButton', 'scrollToBottom', 'setMessagesToOld']);
     }
 
     componentWillMount() {
-        const {toId, fromId} = this.props.params;
-        Utils.getFromUrlWithBody(`http://localhost:3000/messages`, { toId, fromId }).then((messages) => {
-            this.props.messageActions.loadMessages(messages);
-        });
-
-        Utils.getFromUrl(`http://localhost:3000/users/profile/${toId}`).then((userInfo) => {
+        const {currentUserId, params} = this.props;
+        const {id} = params;
+        Utils.getFromUrl(`http://localhost:3000/users/profile/${currentUserId}`).then((userInfo) => {
             this.setState({ currentUserInfo: userInfo });
-        });
-
-        Utils.getFromUrl(`http://localhost:3000/users/profile/${fromId}`).then((userInfo) => {
+            return Utils.getFromUrl(`http://localhost:3000/users/profile/${id}`);
+        }).then((userInfo) => {
             this.setState({ companionUserInfo: userInfo });
+            return Utils.getFromUrlWithBody(`http://localhost:3000/messages`, { currentUserId, id });
+        }).then((messages) => {
+            this.props.messageActions.loadMessages(messages);
+            this.setMessagesToOld(messages);
         });
+    }
+
+    setMessagesToOld(messages) {
+        const {currentUserInfo} = this.state;
+        for (let i = 0; i < messages.length; i++) {
+            if (messages[i].status === 'new' && messages[i].toId === currentUserInfo._id) {
+                Utils.getFromUrlWithBody(`http://localhost:3000/messages/setToOld`, { id: messages[i]._id });
+            }
+        }
     }
 
     onChangeInput(event) {
@@ -50,11 +58,11 @@ class DetailMessages extends Component {
     }
 
     onClickButton() {
-        const {toId, fromId} = this.props.params;
+        const {params, currentUserId} = this.props;
         const date = new Moment();
         this.props.messageActions.sendMessage({
-            toId,
-            fromId,
+            toId: params.id,
+            fromId: currentUserId,
             message: this.state.newMessage,
             date: date.format('HH:mm:ss DD.MM.YYYY'),
             status: 'new'
@@ -70,26 +78,28 @@ class DetailMessages extends Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setMessagesToOld(nextProps.messages);
+    }
+
     componentDidUpdate() {
         this.scrollToBottom();
-
     }
 
     componentDidMount() {
         this.scrollToBottom();
-
     }
 
     renderMessage(data, index) {
-        const {fromId, toId, message, date} = data;
+        const {fromId, message, date} = data;
         const {currentUserInfo, companionUserInfo} = this.state;
-        const userName = toId === currentUserInfo._id ? `${currentUserInfo.firstName} ${currentUserInfo.secondName}`
-            : `${companionUserInfo.firstName} ${companionUserInfo.secondName}`;
+        const userName = fromId === currentUserInfo._id ? `${currentUserInfo.secondName} ${currentUserInfo.firstName}`
+            : `${companionUserInfo.secondName} ${companionUserInfo.firstName}`;
 
         return (
             <div key={index} className="message-container">
                 <Row className="message-title">
-                    <Link to={`/personal_area/profile/${toId}`}>
+                    <Link to={`/personal_area/profile?id=${fromId}`}>
                         <Col className="user-name">{userName}</Col>
                     </Link>
                     <Col className="date-message">{date}</Col>
@@ -131,6 +141,7 @@ class DetailMessages extends Component {
 
 
 const mapStateToProps = state => ({
+    currentUserId: state.users.currentUser.id,
     messages: state.messages.messages,
     errorMessage: state.messages.errorMessage
 });

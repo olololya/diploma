@@ -23,7 +23,7 @@ class Messages extends Component {
 
     componentWillMount() {
         const {currentUserId} = this.props;
-        Utils.getFromUrl(`http://localhost:3000/messages/${currentUserId}`).then((users) => {
+        Utils.getFromUrlGET(`http://localhost:3000/messages/user/${currentUserId}`).then((users) => {
             if (users && !users.length) {
                 this.setState({ users: [] });
                 return;
@@ -37,6 +37,14 @@ class Messages extends Component {
                             firstName: userInfo.firstName,
                             secondName: userInfo.secondName
                         };
+                        return Utils.getFromUrlWithBody(`http://localhost:3000/messages`, { currentUserId, id });
+                    }).then((messages) => {
+                        for (let j = 0; j < messages.length; j++) {
+                            if (messages[j].fromId === id && messages[j].status === 'new') {
+                                users[i].hasNewMessage = true;
+                                break;
+                            }
+                        }
                         this.setState({ users });
                     });
             }
@@ -44,13 +52,18 @@ class Messages extends Component {
     }
 
     renderUser(user, index) {
-        const {id, firstName, secondName} = user;
-        const {currentUserId} = this.props;
+        const {id, firstName, secondName, hasNewMessage} = user;
+        let className = 'user-container';
+        if (hasNewMessage) {
+            className += ' new-message';
+        }
+
         return (
             <Row key={index} >
-                <Link to={`/personal_area/messages/${currentUserId}-${id}`}>
-                    <Col md={8} mdOffset={2} className="user-container">
-                        {`${firstName} ${secondName}`}
+                <Link to={`/personal_area/messages/${id}`}>
+                    <Col md={8} mdOffset={2} className={className}>
+                        {`${secondName} ${firstName}`}
+                        {hasNewMessage && <div className="new-message-text">Новое сообщение!</div>}
                     </Col>
                 </Link>
             </Row>

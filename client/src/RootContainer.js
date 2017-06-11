@@ -37,7 +37,7 @@ export default () => (
                     <Route path="profile/:id" component={Profile} />
                     <Route path="orders/:id" component={Orders} />
                     <Route path="messages" component={Messages} />
-                    <Route path="messages/:toId-:fromId" component={DetailMessages} />
+                    <Route path="messages/:id" component={DetailMessages} />
                     <Route path="settings/:id" component={Settings} />
                 </Route>
                 <Route path="authorization" component={Authorization} />
