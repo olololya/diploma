@@ -1,4 +1,5 @@
 import UserModel from '../models/user';
+import ProfileModel from '../models/profile';
 
 export function getAllUsers() {
     return UserModel.find().exec();
@@ -16,6 +17,11 @@ export function getUserByEmail(email) {
     return UserModel.findOne({ email });
 }
 
+export function createPersonalProfile() {
+    const profile = new ProfileModel();
+    return profile.save();
+}
+
 export function createUser(data) {
     const user = new UserModel({
         login: data.login,
@@ -24,7 +30,8 @@ export function createUser(data) {
         type: data.type,
         dateRegistration: data.dateRegistration,
         firstName: data.firstName,
-        secondName: data.secondName
+        secondName: data.secondName,
+        personalProfile: data.personalProfile
     });
     return user.save();
 }

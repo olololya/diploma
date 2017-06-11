@@ -68,23 +68,21 @@ export function createUser(req, res) {
         if (password !== passwordConfirm) {
             throw {message: 'Пароли не совпадают', type: 'password'};
         }
-
-    }).then(() => {
-        queries.getUserByEmail(email).then(user => {
-            if (user) {
-                throw {message: 'Пользователь с таким email уже зарегистрирован', type: 'email'};
-            } else {
-                return queries.createUser(req.body);
-            }
-        }).then((user) => res.send({
-            data: {
-                id: user._id,
-                type: user.type
-            }
-        })).catch(error => {
-                res.send({ error });
-            });
-    }).catch(error => {
+        return queries.getUserByEmail(email);
+    }).then(user => {
+        if (user) {
+            throw {message: 'Пользователь с таким email уже зарегистрирован', type: 'email'};
+        } else {
+            return queries.createPersonalProfile();
+        }
+    }).then(profile => {
+        return queries.createUser({...req.body, personalProfile: profile._id});
+    }).then((user) => res.send({
+        data: {
+            id: user._id,
+            type: user.type
+        }
+    })).catch(error => {
         res.send({ error });
     });
 }

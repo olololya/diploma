@@ -12,7 +12,8 @@ const UserSchema = new Schema({
     bDate: {type: String, required: false},
     place: {type: String, required: false},
     numOrders: {type: String, required: false},
-    rating: {type: String, required: false}
+    rating: {type: String, required: false},
+    personalProfile: {type: Schema.ObjectId, required: false, ref: 'Profile'}
 });
 
 export default mongoose.model('User', UserSchema);

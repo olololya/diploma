@@ -36,7 +36,6 @@ export function addArea(req, res) {
         if (!city) {
             throw Error('Страна не найдена');
         } else {
-            console.log(city);
             return queries.createArea(name, city._id);
         }
     }).then((areas) => {
