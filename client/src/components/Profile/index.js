@@ -2,6 +2,11 @@ import React, {Component} from 'react';
 import {
     Row,
     Col,
+    Table,
+    Panel,
+    Accordion,
+    ListGroup,
+    ListGroupItem,
     Button
 } from 'react-bootstrap';
 
@@ -20,8 +25,11 @@ class Profile extends Component {
 
         this.state = {
             userInfo: {},
-            users: []
-        }
+            users: [],
+            openTransportInfo: false
+        };
+
+        Utils.updateBindings(this, ['renderTransport', 'renderAreas']);
     }
 
     componentWillMount() {
@@ -33,7 +41,38 @@ class Profile extends Component {
                 userInfo.transport = data.profile.transport;
                 userInfo.price = data.profile.price;
             }
-            this.setState({ userInfo });
+            //this.setState({ userInfo });
+            this.setState({
+                userInfo: {
+                    ...userInfo,
+                    transport: [{
+                        type: 'Легковой',
+                        model: 'Audi 80',
+                        number: '33333',
+                        color: 'Серебристый',
+                        capacity: '100',
+                        maxDimensions: { width: 100, height: 100, length: 100},
+                        date: '2017'
+                    }, {
+                        type: 'Легковой',
+                        model: 'Audi 80',
+                        number: '33333',
+                        color: 'Серебристый',
+                        capacity: '100',
+                        maxDimensions: { width: 100, height: 100, length: 100},
+                        date: '2017'
+                    }, {
+                        type: 'Легковой',
+                        model: 'Audi 80',
+                        number: '33333',
+                        color: 'Серебристый',
+                        capacity: '100',
+                        maxDimensions: { width: 100, height: 100, length: 100},
+                        date: '2017'
+                    }],
+                    areas: [{ name: 'Центральный' }, { name: 'Центральный' }, { name: 'Центральный' }]
+                }
+            });
         });
 
         Utils.getFromUrlGET('http://localhost:3000/users').then((users) => {
@@ -63,10 +102,110 @@ class Profile extends Component {
         return 'Список пуст';
     }
 
+    renderRowInfo(text, data) {
+        return (
+            <Row>
+                <Col md={2}>{text}</Col>
+                <Col md={4}>{data}</Col>
+            </Row>
+        );
+    }
+
+    renderTableRow(element, index) {
+        const {type, number, model, color, date, capacity, maxDimensions} = element;
+        return (
+            <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{number}</td>
+                <td>{type}</td>
+                <td>{model}</td>
+                <td>{color}</td>
+                <td>{capacity}</td>
+                <td>{maxDimensions.width}</td>
+                <td>{maxDimensions.height}</td>
+                <td>{maxDimensions.length}</td>
+                <td>{date}</td>
+            </tr>
+        );
+    }
+
+    renderTransport() {
+        const {transport = []} = this.state.userInfo;
+        const isTransport = transport.length > 0;
+        const bsStyle = isTransport ? 'success' : 'danger';
+
+        const header = (
+            <div>
+                <h4>Транспорт</h4>
+                <Button>Добавить</Button>
+            </div>
+        );
+
+        return (
+            <Panel header={header} eventKey="1" className="transport-panel" bsStyle={bsStyle}>
+              {isTransport &&
+                  <Table responsive>
+                      <thead>
+                      <tr>
+                          <th rowSpan="2">#</th>
+                          <th rowSpan="2">Номер</th>
+                          <th rowSpan="2">Тип</th>
+                          <th rowSpan="2">Марка</th>
+                          <th rowSpan="2">Цвет</th>
+                          <th rowSpan="2">Грузоподъемность</th>
+                          <th colSpan="3">Максимальные габариты</th>
+                          <th rowSpan="2">Год выпуска</th>
+                      </tr>
+                      <tr>
+                          <th>Ширина</th>
+                          <th>Высота</th>
+                          <th>Длина</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        {transport.map((element, index) => this.renderTableRow(element, index))}
+                      </tbody>
+                  </Table>
+              }
+              <Button>Добавить транспорт</Button>
+            </Panel>
+        );
+    }
+
+    renderListGroupItem(item, index) {
+        return (
+            <ListGroupItem key={index}>{item.name}</ListGroupItem>
+        );
+    }
+
+    renderAreas() {
+        const {areas = []} = this.state.userInfo;
+        const isAreas = areas.length > 0;
+        const bsStyle = isAreas ? 'success' : 'danger';
+
+        const header = (
+            <div>
+                <h4>Районы обслуживания</h4>
+                <Button>Редактировать</Button>
+            </div>
+        );
+
+        return (
+            <Panel header={header} eventKey="2" className="areas-panel" bsStyle={bsStyle}>
+                {isAreas &&
+                    <ListGroup fill>
+                        {areas.map((elem, index) => this.renderListGroupItem(elem, index))}
+                    </ListGroup>
+                }
+            </Panel>
+        );
+    }
+
     render() {
         const {userInfo, users = []} = this.state;
         const {_id, firstName = '', secondName = '', lastName = '', type, dateRegistration, login, email,
-            bDate = 'Не указано', place = 'Не указано', numOrders = '0', rating = 'Не определено'
+            bDate = 'Не указано', place = 'Не указано', numOrders = '0', rating = 'Не определено',
+            transport = null, areas = null, price = null
         } = userInfo;
         const typeText = type === 'customer' ? 'Заказчик' : 'Курьер';
         const {currentUserId} = this.props;
@@ -76,39 +215,36 @@ class Profile extends Component {
                 <Row>
                     <Col md={12} className="profile-container">
                         <Row className="profile-title">
-                            <h3>{`${firstName} ${secondName} ${lastName}`}</h3>
-                            <span>{typeText}</span>
-                            <br />
-                            {_id !== currentUserId ?
-                                <Link to={`/personal_area/messages/${_id}`}>Написать сообщение</Link>
-                                : null
-                            }
-                        </Row>
-                        <Row>
-                            <Col md={2}>
-                                <Row>Логин:</Row>
-                                <Row>Email:</Row>
-                                <Row>Дата регистрации:</Row>
-                                <Row>Дата рождения:</Row>
-                                <Row>Местонахождение:</Row>
-                                <Row>Количество заказов:</Row>
-                                <Row>Рейтинг:</Row>
-                            </Col>
-                            <Col md={2}>
-                                <Row>{login}</Row>
-                                <Row>{email}</Row>
-                                <Row>{dateRegistration}</Row>
-                                <Row>{bDate}</Row>
-                                <Row>{place}</Row>
-                                <Row>{numOrders}</Row>
-                                <Row>{rating}</Row>
+                            <Col md={12}>
+                                <h3>{`${firstName} ${secondName} ${lastName}`}</h3>
+                                <span>{typeText}</span>
+                                <br />
+                                {_id !== currentUserId ?
+                                    <Link to={`/personal_area/messages/${_id}`}>Написать сообщение</Link>
+                                    : null
+                                }
                             </Col>
                         </Row>
+                        {this.renderRowInfo('Логин', login)}
+                        {this.renderRowInfo('Email', email)}
+                        {this.renderRowInfo('Дата регистрации', dateRegistration)}
+                        {this.renderRowInfo('Дата рождения', bDate)}
+                        {this.renderRowInfo('Местонахождение', place)}
+                        {this.renderRowInfo('Количество заказов', numOrders)}
+                        {this.renderRowInfo('Рейтинг', rating)}
                     </Col>
                 </Row>
                 <Row>
-                    {this.renderListOfUsers(users)}
+                    <Col md={12}>
+                        <Accordion>
+                            {transport && this.renderTransport()}
+                            {areas && this.renderAreas()}
+                        </Accordion>
+                    </Col>
                 </Row>
+                {/*<Row>*/}
+                    {/*{this.renderListOfUsers(users)}*/}
+                {/*</Row>*/}
             </Row>
         );
     }

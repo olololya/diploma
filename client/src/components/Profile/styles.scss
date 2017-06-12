@@ -9,3 +9,23 @@
         margin-bottom: 20px !important;
     }
 }
+
+.transport-panel {
+    background-color: transparent !important;
+
+    .button {
+        height: 16px;
+        width: 16px;
+        background-image: url('pen.png');
+    }
+}
+
+.areas-panel, li {
+    background-color: transparent !important;
+    
+    .button {
+        height: 16px;
+        width: 16px;
+        background-image: url('pen.png');
+    }
+}
