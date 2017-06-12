@@ -17,6 +17,10 @@ export function getUserByEmail(email) {
     return UserModel.findOne({ email });
 }
 
+export function getPersonalProfileById(_id) {
+    return ProfileModel.findOne({ _id });
+}
+
 export function createPersonalProfile() {
     const profile = new ProfileModel();
     return profile.save();

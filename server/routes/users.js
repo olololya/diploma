@@ -35,15 +35,27 @@ export function getUserByLoginAndPassword(req, res) {
 
 export function getUserById(req, res) {
     const {id} = req.params;
-    queries.getUserById(id).then(data => {
-        if (data) {
-            data.password = null;
 
-            res.send({ data });
+    function getPersonalProfileById(user) {
+        queries.getPersonalProfileById(user.personalProfile).then(profile => {
+            if (profile) {
+                res.send({ user, profile });
+            } else {
+                res.send({ user });
+            }
+        }).catch(error => {
+            res.send(error);
+        });
+    }
+
+    queries.getUserById(id).then(user => {
+        if (user) {
+            user.password = null;
+            getPersonalProfileById(user);
         } else {
             throw new Error('Пользователь не найден');
         }
-    }).catch((error) => {
+    }).catch(error => {
         res.send(error);
     });
 }

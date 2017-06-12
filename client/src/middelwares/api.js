@@ -9,24 +9,6 @@ function sendToSocket(store, action) {
     const state = store.getState();
     const {messages} = state;
 
-    // fetch(action.url, getConfig(action.payload))
-    //     .then((res) => res.json())
-    //     .then((res) => {
-    //         const {message, error = null} = res;
-    //
-    //         if (error) {
-    //             throw error;
-    //         }
-    //
-    //         createAction(store, action, `${action.type}_SUCCESS`, message);
-    //     })
-    //     .catch((error) => {
-    //         createAction(store, action, `${action.type}_FAILED`, {
-    //             errorType: error.type,
-    //             message: error.message
-    //         });
-    //     });
-
      messages.socket.send(JSON.stringify(action.payload));
      createAction(store, action, `${action.type}_SUCCESS`, action.payload);
 }

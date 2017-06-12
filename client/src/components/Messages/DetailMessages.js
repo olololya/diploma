@@ -32,11 +32,11 @@ class DetailMessages extends Component {
     componentWillMount() {
         const {currentUserId, params} = this.props;
         const {id} = params;
-        Utils.getFromUrl(`http://localhost:3000/users/profile/${currentUserId}`).then((userInfo) => {
-            this.setState({ currentUserInfo: userInfo });
+        Utils.getFromUrl(`http://localhost:3000/users/profile/${currentUserId}`).then(data => {
+            this.setState({ currentUserInfo: data.user });
             return Utils.getFromUrl(`http://localhost:3000/users/profile/${id}`);
-        }).then((userInfo) => {
-            this.setState({ companionUserInfo: userInfo });
+        }).then(data => {
+            this.setState({ companionUserInfo: data.user });
             return Utils.getFromUrlWithBody(`http://localhost:3000/messages`, { currentUserId, id });
         }).then((messages) => {
             this.props.messageActions.loadMessages(messages);
