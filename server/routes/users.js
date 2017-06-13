@@ -99,6 +99,18 @@ export function createUser(req, res) {
     });
 }
 
+export function updateAreasByUser(req, res) {
+    const {areas, id} = req.body;
+
+    queries.getUserById(id).then(user => {
+        return queries.updateAreas(user.personalProfile, areas);
+    }).then(profile => {
+        res.send(profile.areas);
+    }).catch(error => {
+       res.send(error);
+    });
+}
+
 export function deleteUser(req, res) {
     const {id} = req.params;
     queries.getUserById(id).then(user => {

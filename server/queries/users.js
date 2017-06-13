@@ -1,3 +1,4 @@
+import {Schema} from 'mongoose';
 import UserModel from '../models/user';
 import ProfileModel from '../models/profile';
 
@@ -24,6 +25,10 @@ export function getPersonalProfileById(_id) {
 export function createPersonalProfile() {
     const profile = new ProfileModel();
     return profile.save();
+}
+
+export function updateAreas(_id, areas) {
+    return ProfileModel.update({ _id }, {$set: { areas }});
 }
 
 export function createUser(data) {

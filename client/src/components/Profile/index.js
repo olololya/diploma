@@ -7,6 +7,7 @@ import {
     Accordion,
     ListGroup,
     ListGroupItem,
+    Checkbox,
     Button
 } from 'react-bootstrap';
 
@@ -29,7 +30,9 @@ class Profile extends Component {
             openTransportInfo: false
         };
 
-        Utils.updateBindings(this, ['renderTransport', 'renderAreas']);
+        Utils.updateBindings(this, ['renderTransport', 'renderAreas', 'renderAreasGroups', 'onChangeAreaItem',
+            'onEditAreas'
+        ]);
     }
 
     componentWillMount() {
@@ -69,13 +72,20 @@ class Profile extends Component {
                         capacity: '100',
                         maxDimensions: { width: 100, height: 100, length: 100},
                         date: '2017'
-                    }],
-                    areas: [{ name: 'Центральный' }, { name: 'Центральный' }, { name: 'Центральный' }]
+                    }]
                 }
             });
         });
 
-        Utils.getFromUrlGET('http://localhost:3000/users').then((users) => {
+        Utils.getFromUrlGET('http://localhost:3000/areas').then(allAreas => {
+            this.setState({ allAreas });
+        });
+
+        Utils.getFromUrlGET('http://localhost:3000/cities').then(cities => {
+            this.setState({ cities });
+        });
+
+        Utils.getFromUrlGET('http://localhost:3000/users').then(users => {
             this.setState({ users });
         });
     }
@@ -134,15 +144,8 @@ class Profile extends Component {
         const isTransport = transport.length > 0;
         const bsStyle = isTransport ? 'success' : 'danger';
 
-        const header = (
-            <div>
-                <h4>Транспорт</h4>
-                <Button>Добавить</Button>
-            </div>
-        );
-
         return (
-            <Panel header={header} eventKey="1" className="transport-panel" bsStyle={bsStyle}>
+            <Panel header="Транспорт" eventKey="1" className="transport-panel" bsStyle={bsStyle}>
               {isTransport &&
                   <Table responsive>
                       <thead>
@@ -172,40 +175,77 @@ class Profile extends Component {
         );
     }
 
+    onChangeAreaItem(item) {
+        const {areas = []} = this.state.userInfo;
+        const index = areas.indexOf(item._id);
+        if (index === -1) {
+            areas.push(item._id);
+        } else {
+            areas.splice(index, 1);
+        }
+
+        this.setState({ userInfo: {
+            ...this.state.userInfo,
+            areas
+        }});
+    }
+
     renderListGroupItem(item, index) {
+        const {areas = []} = this.state.userInfo;
+        let isChecked = areas.indexOf(item._id) !== -1;
         return (
-            <ListGroupItem key={index}>{item.name}</ListGroupItem>
+            <ListGroupItem key={index}>
+                <Checkbox checked={isChecked} onChange={() => this.onChangeAreaItem(item)}>
+                    {item.name}
+                </Checkbox>
+            </ListGroupItem>
         );
     }
 
+    renderAreasGroups(elem, index) {
+        const {allAreas = []} = this.state;
+
+        const isAllAreas = allAreas.length > 0;
+        const filteredAreas = !isAllAreas ? null : allAreas.filter(item => item.city === elem._id);
+
+        return (
+          <div key={index}>
+              <span>{elem.name}</span>
+              {filteredAreas &&
+                <ListGroup fill>
+                    {filteredAreas.map((elem, index) => this.renderListGroupItem(elem, index))}
+                </ListGroup>
+              }
+          </div>
+        );
+    }
+
+    onEditAreas() {
+        const {currentUserId} = this.props;
+        const {areas} = this.state.userInfo;
+        Utils.getFromUrlWithBody('http://localhost:3000/users/areas', {id: currentUserId, areas});
+    }
+
     renderAreas() {
-        const {areas = []} = this.state.userInfo;
+        const {userInfo, cities = []} = this.state;
+        const {areas = []} = userInfo;
+        const isCities = cities.length > 0;
         const isAreas = areas.length > 0;
         const bsStyle = isAreas ? 'success' : 'danger';
 
-        const header = (
-            <div>
-                <h4>Районы обслуживания</h4>
-                <Button>Редактировать</Button>
-            </div>
-        );
-
         return (
-            <Panel header={header} eventKey="2" className="areas-panel" bsStyle={bsStyle}>
-                {isAreas &&
-                    <ListGroup fill>
-                        {areas.map((elem, index) => this.renderListGroupItem(elem, index))}
-                    </ListGroup>
-                }
+            <Panel header="Районы обслуживания" eventKey="2" className="areas-panel" bsStyle={bsStyle}>
+                {isCities && cities.map((elem, index) => this.renderAreasGroups(elem, index))}
+                <Button onClick={this.onEditAreas}>Редактировать</Button>
             </Panel>
         );
     }
 
     render() {
-        const {userInfo, users = []} = this.state;
+        const {userInfo, users = [], cities = null} = this.state;
         const {_id, firstName = '', secondName = '', lastName = '', type, dateRegistration, login, email,
             bDate = 'Не указано', place = 'Не указано', numOrders = '0', rating = 'Не определено',
-            transport = null, areas = null, price = null
+            transport = null, price = null
         } = userInfo;
         const typeText = type === 'customer' ? 'Заказчик' : 'Курьер';
         const {currentUserId} = this.props;
@@ -238,7 +278,7 @@ class Profile extends Component {
                     <Col md={12}>
                         <Accordion>
                             {transport && this.renderTransport()}
-                            {areas && this.renderAreas()}
+                            {cities && this.renderAreas()}
                         </Accordion>
                     </Col>
                 </Row>
