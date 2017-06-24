@@ -127,6 +127,18 @@ export function updateAreasByUser(req, res) {
     });
 }
 
+export function updatePriceByUser(req, res) {
+    const {price, id} = req.body;
+
+    queries.getUserById(id).then(user => {
+        return queries.updatePrice(user.personalProfile, price);
+    }).then(profile => {
+        res.send(profile.price);
+    }).catch(error => {
+        res.send(error);
+    });
+}
+
 export function deleteUser(req, res) {
     const {id} = req.params;
     queries.getUserById(id).then(user => {

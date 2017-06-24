@@ -12,36 +12,51 @@
     .row-info {
         padding: 2px 0;
 
-        .info {
-            margin-right: 3px;
+        .field-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: 0px;
+
+            .form-control {
+                width: 200px;
+                margin-right: 5px;
+
+            }
+
+            .error-input {
+                border: 1px solid #ff9e8d;
+                background-color: #e2c6bf;
+            }
+
         }
 
-        button {
-            background-color: transparent;
-            border: none;
-            color: white;
-            transition: all .3s linear;
-            padding: 0;
-            font-size: 15px;
-
-            div {
-                height: 100%;
-                width: 100%;
-                transform: rotate(135deg);
-                top: -2px;
-            }
-
-            &:hover {
-                transform: scale(1.1);
-                color: #f2863e;
-            }
-
-            &:active, &:focus {
-                border: none;
-                outline: none;
-                background-color: transparent;
-            }
-        }
+        //button {
+        //    background-color: transparent;
+        //    border: none;
+        //    color: white;
+        //    transition: all .3s linear;
+        //    padding: 0;
+        //    font-size: 15px;
+        //
+        //    div {
+        //        height: 100%;
+        //        width: 100%;
+        //        transform: rotate(135deg);
+        //        top: -2px;
+        //    }
+        //
+        //    &:hover {
+        //        transform: scale(1.1);
+        //        color: #f2863e;
+        //    }
+        //
+        //    &:active, &:focus {
+        //        border: none;
+        //        outline: none;
+        //        background-color: transparent;
+        //    }
+        //}
     }
 }
 

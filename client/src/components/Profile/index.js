@@ -7,6 +7,8 @@ import {
     Accordion,
     ListGroup,
     ListGroupItem,
+    Popover,
+    OverlayTrigger,
     Checkbox,
     Button
 } from 'react-bootstrap';
@@ -32,12 +34,13 @@ class Profile extends Component {
             isCurrentUserProfile: false,
             isShowModalTransport: false,
             allTransport: [],
-            types: []
+            types: [],
+            errorPrice: null
         };
 
         Utils.updateBindings(this, ['renderTransport', 'renderAreas', 'renderAreasGroups', 'onChangeAreaItem',
             'onEditAreas', 'updateInfo', 'onClickAddTransport', 'closeModalTransport', 'addTransport',
-            'renderAreasInline', 'deleteTransport'
+            'renderAreasInline', 'deleteTransport', 'onChangePrice', 'changeRowInfo', 'renderPriceField'
         ]);
     }
 
@@ -120,17 +123,84 @@ class Profile extends Component {
         return 'Список пуст';
     }
 
+    getPopoverError(error) {
+        return error ? <Popover id="popover-error" title="Ошибка!">{error}</Popover> : <div />;
+    }
+
+    changeRowInfo() {
+        const {currentUserId} = this.props;
+        const {userInfo} = this.state;
+        if (parseFloat(userInfo.price) > 0.1) {
+            Utils.getFromUrlWithBody('http://localhost:3000/users/price', {id: currentUserId, price: userInfo.price})
+                .then(price => {
+                    this.setState({ userInfo: {
+                        ...this.state.userInfo,
+                        price
+                    }})
+                });
+        } else {
+            this.setState({
+                errorPrice: 'Цена должна быть не менее 0.1 руб.'
+            });
+        }
+    }
+
+    onChangePrice(event) {
+        const price = event.target.value;
+        const newState = {};
+        if (typeof parseFloat(price) !== 'number') {
+            return;
+        }
+        newState.userInfo = {
+            ...this.state.userInfo,
+            price
+        };
+
+        if (this.state.errorPrice) {
+            newState.errorPrice = null;
+        }
+
+        this.setState(newState);
+    }
+
+    renderPriceField() {
+        const {userInfo, errorPrice} = this.state;
+        const className= `form-control ${errorPrice ? 'error-input' : ''}`;
+
+        return (
+            <div className="field-container">
+                <OverlayTrigger trigger={['hover', 'focus']}
+                                placement="right"
+                                overlay={this.getPopoverError(errorPrice)}
+                >
+                    <input type="number"
+                           min="0.1"
+                           step="0.1"
+                           className={className}
+                           value={userInfo.price}
+                           placeholder="Установите цену"
+                           onChange={this.onChangePrice}
+                    />
+                </OverlayTrigger>
+                <Button onClick={this.changeRowInfo}>Установить</Button>
+            </div>
+        );
+    }
+
     renderRowInfo(text, data, isEditable = false) {
-        const {isCurrentUserProfile} = this.state;
+        const {isCurrentUserProfile, userInfo, errorPrice} = this.state;
         return (
             <Row className="row-info">
                 <Col md={2}>{text}</Col>
                 <Col md={4}>
                     <span className="info">{data}</span>
-                    {isCurrentUserProfile && isEditable &&
-                        <Button onClick={() => this.changeRowInfo(text)}>
-                            <div className="glyphicon glyphicon-pencil" />
-                        </Button>}
+                    {isEditable ?
+                        <div>
+                            {isCurrentUserProfile ? this.renderPriceField()
+                                : <span>{userInfo.price || 'Не указано'}</span>}
+                        </div>
+                        : null
+                    }
                 </Col>
             </Row>
         );
@@ -367,7 +437,7 @@ class Profile extends Component {
                                 <h3>{`${firstName} ${secondName} ${lastName}`}</h3>
                                 <span>{typeText}</span>
                                 <br />
-                                {isCurrentUserProfile ?
+                                {!isCurrentUserProfile ?
                                     <Link to={`/personal_area/messages/${_id}`}>Написать сообщение</Link>
                                     : null
                                 }
@@ -378,6 +448,7 @@ class Profile extends Component {
                         {this.renderRowInfo('Дата регистрации', dateRegistration)}
                         {this.renderRowInfo('Количество заказов', numOrders)}
                         {this.renderRowInfo('Рейтинг', rating)}
+                        {isCourier && this.renderRowInfo('Цена за час работы, руб.', price, true)}
                     </Col>
                 </Row>
                 {isCourier &&

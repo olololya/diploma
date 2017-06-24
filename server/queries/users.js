@@ -41,6 +41,10 @@ export function createPersonalProfile() {
     return profile.save();
 }
 
+export function updatePrice(_id, price) {
+    return ProfileModel.update({ _id }, {$set: { price }});
+}
+
 export function updateAreas(_id, areas) {
     return ProfileModel.update({ _id }, {$set: { areas }});
 }
