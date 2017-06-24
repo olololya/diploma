@@ -140,7 +140,7 @@ class Profile extends Component {
                 });
         } else {
             this.setState({
-                errorPrice: 'Цена должна быть не менее 0.1 руб.'
+                errorPrice: 'Цена должна быть не менее 0,1 руб.'
             });
         }
     }
@@ -148,9 +148,6 @@ class Profile extends Component {
     onChangePrice(event) {
         const price = event.target.value;
         const newState = {};
-        if (typeof parseFloat(price) !== 'number') {
-            return;
-        }
         newState.userInfo = {
             ...this.state.userInfo,
             price
@@ -448,7 +445,7 @@ class Profile extends Component {
                         {this.renderRowInfo('Дата регистрации', dateRegistration)}
                         {this.renderRowInfo('Количество заказов', numOrders)}
                         {this.renderRowInfo('Рейтинг', rating)}
-                        {isCourier && this.renderRowInfo('Цена за час работы, руб.', price, true)}
+                        {isCourier && this.renderRowInfo('Цена за час работы, руб.', null, true)}
                     </Col>
                 </Row>
                 {isCourier &&

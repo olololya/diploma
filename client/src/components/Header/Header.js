@@ -121,8 +121,6 @@ class Header extends Component {
                                   activeClassName="link-active">Заказы</Link>
                             <Link to={`/personal_area/messages`} className="link"
                                   activeClassName="link-active">Сообщения</Link>
-                            <Link to={`/personal_area/settings/${currentUserId}`} className="link"
-                                  activeClassName="link-active">Настройки</Link>
                             <Link to="/" className="link" onClick={this.logout}>Выйти</Link>
                         </div>
                         : null
