@@ -32,9 +32,9 @@ class DetailMessages extends Component {
     componentWillMount() {
         const {currentUserId, params} = this.props;
         const {id} = params;
-        Utils.getFromUrl(`http://localhost:3000/users/profile/${currentUserId}`).then(data => {
+        Utils.getFromUrlGET(`http://localhost:3000/users/profile/${currentUserId}`).then(data => {
             this.setState({ currentUserInfo: data.user });
-            return Utils.getFromUrl(`http://localhost:3000/users/profile/${id}`);
+            return Utils.getFromUrlGET(`http://localhost:3000/users/profile/${id}`);
         }).then(data => {
             this.setState({ companionUserInfo: data.user });
             return Utils.getFromUrlWithBody(`http://localhost:3000/messages`, { currentUserId, id });
@@ -60,12 +60,16 @@ class DetailMessages extends Component {
     onClickButton() {
         const {params, currentUserId} = this.props;
         const date = new Moment();
-        this.props.messageActions.sendMessage({
+        const message = {
             toId: params.id,
             fromId: currentUserId,
             message: this.state.newMessage,
             date: date.format('HH:mm:ss DD.MM.YYYY'),
             status: 'new'
+        };
+        this.props.messageActions.sendMessage({
+            message,
+            notification: null
         });
 
         this.setState({ newMessage: '' });

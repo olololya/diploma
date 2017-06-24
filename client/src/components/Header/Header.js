@@ -22,10 +22,6 @@ class Header extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            notofication: null
-        };
-
         this.logout = this.logout.bind(this);
         this.incomeFromSocket = this.incomeFromSocket.bind(this);
         this.onCloseSocket = this.onCloseSocket.bind(this);
@@ -49,13 +45,18 @@ class Header extends Component {
         const {currentUserId, messageActions} = this.props;
         const message = JSON.parse(event.data);
         if (message.fromId === currentUserId || message.toId === currentUserId) {
-            messageActions.addMessage(message);
-            Utils.getFromUrl(`http://localhost:3000/users/profile/${message.fromId}`).then((userInfo) => {
-                const {firstName, secondName} = userInfo;
+            Utils.getFromUrlGET(`http://localhost:3000/users/profile/${message.fromId}`).then(data => {
+                const {firstName, secondName} = data.user;
                 const userName = `${secondName} ${firstName}`;
-                this.setState({ notification: `Новое сообщение от пользователя ${userName}` });
+                messageActions.addMessage({
+                    message,
+                    notification: {
+                        text: `Новое сообщение от пользователя ${userName}`,
+                        type: 'message'
+                    }
+                });
                 setTimeout(() => {
-                    this.setState({ notification: null });
+                    messageActions.deleteNotification();
                 }, 3000);
             });
         }
@@ -105,8 +106,7 @@ class Header extends Component {
     }
 
     render() {
-        const {notification} = this.state;
-        const {location, currentUserId} = this.props;
+        const {location, currentUserId, notification} = this.props;
         const profileLink = this.getProfileLink(currentUserId);
         return (
             <Row className="header">
@@ -130,14 +130,15 @@ class Header extends Component {
 
                     {profileLink}
                 </Col>
-                <Notification text={notification} />
+                <Notification text={notification ? notification.text : null} />
             </Row>);
     }
-};
+}
 
 const mapStateToProps = state => ({
     currentUserId: state.users.currentUser.id,
     errorMessage: state.users.errorMessage,
+    notification: state.messages.notification,
     socket: state.messages.socket
 });
 

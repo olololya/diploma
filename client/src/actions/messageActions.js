@@ -6,7 +6,8 @@ export const constants = {
     LOAD_MESSAGES_SUCCESS: 'LOAD_MESSAGES_SUCCESS',
     LOAD_MESSAGES_FAILED: 'LOAD_MESSAGES_FAILED',
     ADD_MESSAGE: 'ADD_MESSAGE',
-    CREATE_SOCKET: 'CREATE_SOCKET'
+    CREATE_SOCKET: 'CREATE_SOCKET',
+    DELETE_NOTIFICATION: 'DELETE_NOTIFICATION'
 };
 
 export const messageActions = {
@@ -27,5 +28,8 @@ export const messageActions = {
     createSocket: (socket) => ({
         type: constants.CREATE_SOCKET,
         payload: socket
+    }),
+    deleteNotification: () => ({
+        type: constants.DELETE_NOTIFICATION
     })
 };

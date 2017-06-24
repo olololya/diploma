@@ -18,37 +18,49 @@ class Messages extends Component {
 
         this.state = {
             users: []
-        }
+        };
+
+        this.update = this.update.bind(this);
     }
 
-    componentWillMount() {
-        const {currentUserId} = this.props;
-        Utils.getFromUrlGET(`http://localhost:3000/messages/user/${currentUserId}`).then((users) => {
+    update(props) {
+        const {currentUserId} = props;
+        Utils.getFromUrlGET(`http://localhost:3000/messages/user/${currentUserId}`).then(users => {
             if (users && !users.length) {
                 this.setState({ users: [] });
                 return;
             }
             for (let i = 0; i < users.length; i++) {
                 const id = users[i];
-                Utils.getFromUrl(`http://localhost:3000/users/profile/${id}`)
-                    .then((userInfo) => {
+                Utils.getFromUrlGET(`http://localhost:3000/users/profile/${id}`)
+                    .then(data => {
                         users[i] = {
                             id,
-                            firstName: userInfo.firstName,
-                            secondName: userInfo.secondName
+                            firstName: data.user.firstName,
+                            secondName: data.user.secondName
                         };
                         return Utils.getFromUrlWithBody(`http://localhost:3000/messages`, { currentUserId, id });
                     }).then((messages) => {
-                        for (let j = 0; j < messages.length; j++) {
-                            if (messages[j].fromId === id && messages[j].status === 'new') {
-                                users[i].hasNewMessage = true;
-                                break;
-                            }
+                    for (let j = 0; j < messages.length; j++) {
+                        if (messages[j].fromId === id && messages[j].status === 'new') {
+                            users[i].hasNewMessage = true;
+                            break;
                         }
-                        this.setState({ users });
-                    });
+                    }
+                    this.setState({ users });
+                });
             }
         });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.notification && nextProps.notification.type === 'message') {
+            this.update(nextProps);
+        }
+    }
+
+    componentWillMount() {
+        this.update(this.props);
     }
 
     renderUser(user, index) {
@@ -88,7 +100,8 @@ class Messages extends Component {
 const mapStateToProps = state => ({
     currentUserId: state.users.currentUser.id,
     messages: state.messages.messages,
-    errorMessage: state.messages.errorMessage
+    errorMessage: state.messages.errorMessage,
+    notification: state.messages.notification
 });
 
 const mapDispatchToProps = dispatch => ({

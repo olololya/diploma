@@ -9,7 +9,7 @@ function sendToSocket(store, action) {
     const state = store.getState();
     const {messages} = state;
 
-     messages.socket.send(JSON.stringify(action.payload));
+     messages.socket.send(JSON.stringify(action.payload.message));
      createAction(store, action, `${action.type}_SUCCESS`, action.payload);
 }
 

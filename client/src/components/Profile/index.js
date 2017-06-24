@@ -210,11 +210,13 @@ class Profile extends Component {
 
         return (
           <div key={index}>
-              <span>{elem.name}</span>
-              {filteredAreas &&
-                <ListGroup fill>
-                    {filteredAreas.map((elem, index) => this.renderListGroupItem(elem, index))}
-                </ListGroup>
+              {filteredAreas && filteredAreas.length ?
+                  <div>
+                      <span>{elem.name}</span>
+                      <ListGroup fill>
+                          {filteredAreas.map((elem, index) => this.renderListGroupItem(elem, index))}
+                      </ListGroup>
+                  </div> : null
               }
           </div>
         );

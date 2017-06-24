@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server --inline --hot",
+    "start": "webpack-dev-server --inline --hot --color",
     "nodemon": "set NODE_PATH=./src; && nodemon server.js"
   },
   "main": "webpack.config.js",

@@ -3,7 +3,8 @@ import {constants} from '../actions/messageActions';
 const initialState = {
     messages: [],
     errorMessage: {},
-    socket: null
+    socket: null,
+    notification: null
 };
 
 const messageReducer = (state = initialState, action) => {
@@ -12,7 +13,8 @@ const messageReducer = (state = initialState, action) => {
         case constants.ADD_MESSAGE:
             return {
                 ...state,
-                messages: [...state.messages, action.payload]
+                messages: [...state.messages, action.payload.message],
+                notification: action.payload.notification
             };
         case constants.LOAD_MESSAGES:
             return {
@@ -29,6 +31,11 @@ const messageReducer = (state = initialState, action) => {
             return {
                 ...state,
                 socket: action.payload
+            };
+        case constants.DELETE_NOTIFICATION:
+            return {
+                ...state,
+                notification: null
             };
         default:
             return state;
