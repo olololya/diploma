@@ -1,6 +1,7 @@
 import {Schema} from 'mongoose';
 import UserModel from '../models/user';
 import ProfileModel from '../models/profile';
+import TransportTypes from '../models/transportTypes';
 
 export function getAllUsers() {
     return UserModel.find().exec();
@@ -22,6 +23,19 @@ export function getPersonalProfileById(_id) {
     return ProfileModel.findOne({ _id });
 }
 
+export function getTransportTypes() {
+    return TransportTypes.find();
+}
+
+
+export function addTransportTypes(data) {
+    const types = new TransportTypes({
+        code: data.code,
+        name: data.name
+    });
+    return types.save();
+}
+
 export function createPersonalProfile() {
     const profile = new ProfileModel();
     return profile.save();
@@ -29,6 +43,10 @@ export function createPersonalProfile() {
 
 export function updateAreas(_id, areas) {
     return ProfileModel.update({ _id }, {$set: { areas }});
+}
+
+export function updateTransports(_id, transport) {
+    return ProfileModel.update({ _id }, {$set: { transport }});
 }
 
 export function createUser(data) {

@@ -12,6 +12,22 @@ export function getAllUsers(req, res) {
     });
 }
 
+export function getTransportTypes(req, res) {
+    queries.getTransportTypes().then(data => {
+        res.send(data);
+    }).catch(error => {
+        res.send(error);
+    });
+}
+
+export function addTransportTypes(req, res) {
+    queries.addTransportTypes(req.body).then(() => {
+        res.send('Тип автомобиля добавлен');
+    }).catch(error => {
+        res.send(error);
+    });
+}
+
 export function getUserByLoginAndPassword(req, res) {
     const {login, password} = req.body;
 

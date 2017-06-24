@@ -16,6 +16,7 @@ import {bindActionCreators} from 'redux';
 import { browserHistory, Link } from 'react-router';
 import {userActions} from '../../actions/userActions';
 import {messageActions} from '../../actions/messageActions';
+import TransportForm from './TransportForm';
 import * as Utils from '../../utils';
 
 import './styles.scss';
@@ -27,54 +28,37 @@ class Profile extends Component {
         this.state = {
             userInfo: {},
             users: [],
-            openTransportInfo: false
+            openTransportInfo: false,
+            isCurrentUserProfile: false,
+            isShowModalTransport: false,
+            allTransport: [],
+            types: []
         };
 
         Utils.updateBindings(this, ['renderTransport', 'renderAreas', 'renderAreasGroups', 'onChangeAreaItem',
-            'onEditAreas'
+            'onEditAreas', 'updateInfo', 'onClickAddTransport', 'closeModalTransport', 'addTransport',
+            'renderAreasInline', 'deleteTransport'
         ]);
     }
 
-    componentWillMount() {
-        const {id} = this.props.params;
-        Utils.getFromUrlGET(`http://localhost:3000/users/profile/${id}`).then(data => {
+    updateInfo(props) {
+        const {params, currentUserId} = props;
+        Utils.getFromUrlGET(`http://localhost:3000/users/profile/${params.id}`).then(data => {
             const userInfo = {...data.user};
+            const isCurrentUserProfile = currentUserId === data.user._id;
             if (data.profile) {
                 userInfo.areas = data.profile.areas;
-                userInfo.transport = data.profile.transport;
+                userInfo.transports = data.profile.transport;
                 userInfo.price = data.profile.price;
             }
-            //this.setState({ userInfo });
             this.setState({
-                userInfo: {
-                    ...userInfo,
-                    transport: [{
-                        type: 'Легковой',
-                        model: 'Audi 80',
-                        number: '33333',
-                        color: 'Серебристый',
-                        capacity: '100',
-                        maxDimensions: { width: 100, height: 100, length: 100},
-                        date: '2017'
-                    }, {
-                        type: 'Легковой',
-                        model: 'Audi 80',
-                        number: '33333',
-                        color: 'Серебристый',
-                        capacity: '100',
-                        maxDimensions: { width: 100, height: 100, length: 100},
-                        date: '2017'
-                    }, {
-                        type: 'Легковой',
-                        model: 'Audi 80',
-                        number: '33333',
-                        color: 'Серебристый',
-                        capacity: '100',
-                        maxDimensions: { width: 100, height: 100, length: 100},
-                        date: '2017'
-                    }]
-                }
+                isCurrentUserProfile,
+                userInfo
             });
+        });
+
+        Utils.getFromUrlGET('http://localhost:3000/transports').then(allTransports => {
+            this.setState({ allTransports });
         });
 
         Utils.getFromUrlGET('http://localhost:3000/areas').then(allAreas => {
@@ -88,6 +72,30 @@ class Profile extends Component {
         Utils.getFromUrlGET('http://localhost:3000/users').then(users => {
             this.setState({ users });
         });
+    }
+
+    componentWillMount() {
+        this.updateInfo(this.props);
+
+        Utils.getFromUrlGET('http://localhost:3000/transport_types').then(types => {
+            this.setState({ types });
+        });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (!_.isEqual(nextProps, this.props)) {
+            this.updateInfo(nextProps);
+        }
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        const {userInfo} = this.state;
+        if (userInfo && nextState.userInfo) {
+            if (!_.isEqual(userInfo.transports, nextState.userInfo.transports) ||
+                !_.isEqual(userInfo.areas, nextState.userInfo.areas)) {
+                this.updateInfo(nextProps);
+            }
+        }
     }
 
     renderListOfUsers(users) {
@@ -112,22 +120,54 @@ class Profile extends Component {
         return 'Список пуст';
     }
 
-    renderRowInfo(text, data) {
+    renderRowInfo(text, data, isEditable = false) {
+        const {isCurrentUserProfile} = this.state;
         return (
-            <Row>
+            <Row className="row-info">
                 <Col md={2}>{text}</Col>
-                <Col md={4}>{data}</Col>
+                <Col md={4}>
+                    <span className="info">{data}</span>
+                    {isCurrentUserProfile && isEditable &&
+                        <Button onClick={() => this.changeRowInfo(text)}>
+                            <div className="glyphicon glyphicon-pencil" />
+                        </Button>}
+                </Col>
             </Row>
         );
     }
 
+    deleteTransport(id) {
+        const {currentUserId} = this.props;
+        const {userInfo} = this.state;
+        const {transports = []} = userInfo;
+        Utils.getFromUrlWithBody(`http://localhost:3000/transport/${id}`, {
+            currentUserId,
+            transports
+        }).then(transports => {
+            this.setState({
+                userInfo: {
+                    ...userInfo,
+                    transports
+                }
+            });
+        });
+    }
+
     renderTableRow(element, index) {
-        const {type, number, model, color, date, capacity, maxDimensions} = element;
+        const {_id, number, type, model, color, capacity, maxDimensions, date} = element;
+        const {types} = this.state;
+        let typeName = '';
+        for (let i = 0; i < types.length; i++) {
+            if (type === types[i]._id) {
+                typeName = types[i].name;
+                break;
+            }
+        }
         return (
             <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{number}</td>
-                <td>{type}</td>
+                <td>{typeName}</td>
                 <td>{model}</td>
                 <td>{color}</td>
                 <td>{capacity}</td>
@@ -135,42 +175,57 @@ class Profile extends Component {
                 <td>{maxDimensions.height}</td>
                 <td>{maxDimensions.length}</td>
                 <td>{date}</td>
+                <td><Button className="button-trash" onClick={this.deleteTransport.bind(this, _id)}/></td>
             </tr>
         );
     }
 
+    closeModalTransport() {
+        this.setState({ isShowModalTransport: false });
+    }
+
+    onClickAddTransport() {
+        this.setState({ isShowModalTransport: true });
+    }
+
     renderTransport() {
-        const {transport = []} = this.state.userInfo;
-        const isTransport = transport.length > 0;
+        const {isCurrentUserProfile, userInfo, allTransports = []} = this.state;
+        const {transports = []} = userInfo;
+        const isTransport = transports.length > 0 && allTransports.length > 0;
         const bsStyle = isTransport ? 'success' : 'danger';
 
         return (
             <Panel header="Транспорт" eventKey="1" className="transport-panel" bsStyle={bsStyle}>
-              {isTransport &&
-                  <Table responsive>
-                      <thead>
-                      <tr>
-                          <th rowSpan="2">#</th>
-                          <th rowSpan="2">Номер</th>
-                          <th rowSpan="2">Тип</th>
-                          <th rowSpan="2">Марка</th>
-                          <th rowSpan="2">Цвет</th>
-                          <th rowSpan="2">Грузоподъемность</th>
-                          <th colSpan="3">Максимальные габариты</th>
-                          <th rowSpan="2">Год выпуска</th>
-                      </tr>
-                      <tr>
-                          <th>Ширина</th>
-                          <th>Высота</th>
-                          <th>Длина</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                        {transport.map((element, index) => this.renderTableRow(element, index))}
-                      </tbody>
-                  </Table>
-              }
-              <Button>Добавить транспорт</Button>
+                {isTransport ?
+                    <Table responsive>
+                        <thead>
+                        <tr>
+                            <th rowSpan="2">#</th>
+                            <th rowSpan="2">Номер</th>
+                            <th rowSpan="2">Тип</th>
+                            <th rowSpan="2">Марка</th>
+                            <th rowSpan="2">Цвет</th>
+                            <th rowSpan="2">Грузоподъемность</th>
+                            <th colSpan="3">Максимальные габариты</th>
+                            <th rowSpan="2">Год выпуска</th>
+                            <th rowSpan="2" />
+                        </tr>
+                        <tr>
+                            <th>Ширина</th>
+                            <th>Высота</th>
+                            <th>Длина</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {allTransports.map((element, index) => {
+                            if (transports.indexOf(element._id) !== -1) {
+                                return this.renderTableRow(element, index)
+                            }
+                        })}
+                        </tbody>
+                    </Table> : <Row><span>Нет транспорта</span></Row>
+                }
+                {isCurrentUserProfile && <Button onClick={this.onClickAddTransport}>Добавить транспорт</Button>}
             </Panel>
         );
     }
@@ -228,8 +283,31 @@ class Profile extends Component {
         Utils.getFromUrlWithBody('http://localhost:3000/users/areas', {id: currentUserId, areas});
     }
 
+    renderAreasInline(city, index) {
+        const {areas = []} = this.state.userInfo;
+        const {allAreas = []} = this.state;
+
+        const filteredAreas = allAreas.filter(item => item.city === city._id);
+        if (!filteredAreas.length) {
+            return null;
+        }
+
+        return (
+          <Row key={index}>
+              <span>{`${city.name}: `}</span>
+              {filteredAreas.map((elem, index) => {
+                  if (areas.indexOf(elem._id) !== -1) {
+                      return <span key={index}>{`${elem.name}; `}</span>
+                  } else {
+                      return null;
+                  }
+              })}
+          </Row>
+        );
+    }
+
     renderAreas() {
-        const {userInfo, cities = []} = this.state;
+        const {userInfo, cities = [], isCurrentUserProfile} = this.state;
         const {areas = []} = userInfo;
         const isCities = cities.length > 0;
         const isAreas = areas.length > 0;
@@ -237,23 +315,51 @@ class Profile extends Component {
 
         return (
             <Panel header="Районы обслуживания" eventKey="2" className="areas-panel" bsStyle={bsStyle}>
-                {isCities && cities.map((elem, index) => this.renderAreasGroups(elem, index))}
-                <Button onClick={this.onEditAreas}>Редактировать</Button>
+                {isCurrentUserProfile ? <div>
+                        {isCities && cities.map((elem, index) => this.renderAreasGroups(elem, index))}
+                        <Button onClick={this.onEditAreas}>Редактировать</Button>
+                    </div>
+                    : isAreas && isCities ? cities.map((elem, index) => this.renderAreasInline(elem, index))
+                        : <span>Районы не выбраны</span>
+                }
             </Panel>
         );
     }
 
+    addTransport(newTransport) {
+        const {currentUserId} = this.props;
+        const {userInfo} = this.state;
+        const {transports = []} = userInfo;
+        Utils.getFromUrlWithBody('http://localhost:3000/transport', {
+            id: currentUserId,
+            transports,
+            newTransport
+        }).then(transports => {
+            this.setState({
+                userInfo: {
+                    ...userInfo,
+                    transports
+                }
+            });
+        });
+    }
+
     render() {
-        const {userInfo, users = [], cities = null} = this.state;
+        const {currentUserId} = this.props;
+        const {userInfo, users = [], cities = null, isCurrentUserProfile, isShowModalTransport} = this.state;
         const {_id, firstName = '', secondName = '', lastName = '', type, dateRegistration, login, email,
             bDate = 'Не указано', place = 'Не указано', numOrders = '0', rating = 'Не определено',
-            transport = null, price = null
+            transports = null, price = null
         } = userInfo;
-        const typeText = type === 'customer' ? 'Заказчик' : 'Курьер';
-        const {currentUserId} = this.props;
+        const isCourier = type === 'courier';
+        const typeText = isCourier ? 'Курьер' : 'Заказчик';
 
         return (
             <Row style={{ height: '100%' }}>
+                <TransportForm isShowModalTransport={isShowModalTransport}
+                               onClose={this.closeModalTransport}
+                               onSubmit={this.addTransport}
+                />
                 <Row>
                     <Col md={12} className="profile-container">
                         <Row className="profile-title">
@@ -261,7 +367,7 @@ class Profile extends Component {
                                 <h3>{`${firstName} ${secondName} ${lastName}`}</h3>
                                 <span>{typeText}</span>
                                 <br />
-                                {_id !== currentUserId ?
+                                {isCurrentUserProfile ?
                                     <Link to={`/personal_area/messages/${_id}`}>Написать сообщение</Link>
                                     : null
                                 }
@@ -270,20 +376,20 @@ class Profile extends Component {
                         {this.renderRowInfo('Логин', login)}
                         {this.renderRowInfo('Email', email)}
                         {this.renderRowInfo('Дата регистрации', dateRegistration)}
-                        {this.renderRowInfo('Дата рождения', bDate)}
-                        {this.renderRowInfo('Местонахождение', place)}
                         {this.renderRowInfo('Количество заказов', numOrders)}
                         {this.renderRowInfo('Рейтинг', rating)}
                     </Col>
                 </Row>
-                <Row>
-                    <Col md={12}>
-                        <Accordion>
-                            {transport && this.renderTransport()}
-                            {cities && this.renderAreas()}
-                        </Accordion>
-                    </Col>
-                </Row>
+                {isCourier &&
+                    <Row>
+                        <Col md={12}>
+                            <Accordion>
+                                {transports && this.renderTransport()}
+                                {cities && this.renderAreas()}
+                            </Accordion>
+                        </Col>
+                    </Row>
+                }
                 {/*<Row>*/}
                     {/*{this.renderListOfUsers(users)}*/}
                 {/*</Row>*/}

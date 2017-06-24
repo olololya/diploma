@@ -103,7 +103,7 @@ class DetailMessages extends Component {
         return (
             <div key={index} className="message-container">
                 <Row className="message-title">
-                    <Link to={`/personal_area/profile?id=${fromId}`}>
+                    <Link to={`/personal_area/profile/${fromId}`}>
                         <Col className="user-name">{userName}</Col>
                     </Link>
                     <Col className="date-message">{date}</Col>

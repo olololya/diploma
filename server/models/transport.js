@@ -1,7 +1,7 @@
 import mongoose, {Schema} from 'mongoose';
 
 const TransportSchema = new Schema({
-    type: {type: String, required: true},
+    type: {type: Schema.ObjectId, required: true, ref: 'TransportTypes'},
     number: {type: String, required: true},
     model: {type: String, required: true},
     color: {type: String, required: true},

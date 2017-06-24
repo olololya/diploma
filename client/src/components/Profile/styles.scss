@@ -8,10 +8,85 @@
     .profile-title {
         margin-bottom: 20px !important;
     }
+
+    .row-info {
+        padding: 2px 0;
+
+        .info {
+            margin-right: 3px;
+        }
+
+        button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            transition: all .3s linear;
+            padding: 0;
+            font-size: 15px;
+
+            div {
+                height: 100%;
+                width: 100%;
+                transform: rotate(135deg);
+                top: -2px;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+                color: #f2863e;
+            }
+
+            &:active, &:focus {
+                border: none;
+                outline: none;
+                background-color: transparent;
+            }
+        }
+    }
 }
 
 .transport-panel, .areas-panel, li  {
     background-color: transparent !important;
 
+    .button-trash {
+        background: transparent url('./round-delete-button-white.png') no-repeat;
+        height: 16px;
+        width: 16px;
+        border: none;
+        transition: all .3s linear;
 
+        &:focus, &:hover, &:active {
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        &:hover {
+            background: transparent url('./round-delete-button.png') no-repeat;
+        }
+    }
+}
+
+.modal-transport {
+    .field-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 60px;
+        //margin: 5px 0 5px 0 !important;
+
+        .form-control, button {
+            width: 250px;
+        }
+
+        .error-input {
+            border: 1px solid #ff9e8d;
+            background-color: #e2c6bf;
+        }
+
+    }
+
+    .container-right-text {
+        text-align: right;
+    }
 }
