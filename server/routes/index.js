@@ -4,6 +4,7 @@ import * as messagesRouters from './messages';
 import * as areasRouters from './areas';
 import * as transportRouters from './transports';
 import * as ordersRouters from './orders';
+import * as weightRouters from './weight';
 
 const router = express.Router();
 
@@ -50,5 +51,10 @@ router.post('/orders', ordersRouters.addOrder);
 router.post('/order/:id', ordersRouters.updateOrder);
 router.delete('/order/:id', ordersRouters.deleteOrder);
 router.delete('/orders', ordersRouters.deleteAllOrders);
+
+// WEIGHT
+router.get('/weights', weightRouters.getAllWeights);
+router.post('/weight', weightRouters.addWeight);
+router.delete('/orders', weightRouters.deleteAllWeights);
 
 export default router;

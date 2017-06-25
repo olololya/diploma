@@ -16,6 +16,7 @@ import { browserHistory, Link } from 'react-router';
 import {messageActions} from '../../actions/messageActions';
 import {userActions} from '../../actions/userActions';
 import * as Utils from '../../utils';
+import OrderForm from './OrderForm';
 
 import './styles.scss';
 
@@ -24,7 +25,9 @@ class Orders extends Component {
         super(props);
 
         this.state = {
-            profile: null
+            profile: null,
+            orders: [],
+            isShowModal: false
         };
 
         Utils.updateBindings(this, [
@@ -33,7 +36,10 @@ class Orders extends Component {
     }
 
     updateOrders(props) {
-
+        const {currentUserId, currentUserType} = props;
+        Utils.getFromUrlGET(`/order/user/${currentUserType}/${currentUserId}`).then(orders => {
+            this.setState({ orders});
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -78,12 +84,33 @@ class Orders extends Component {
 
     }
 
+    closeModal() {
+        this.setState({ isShowModal: false });
+    }
+
+    showModal() {
+        this.setState({ isShowModal: true });
+    }
+
+    addOrder(order) {
+        console.log(order);
+    }
+
     render() {
-        const {profile} = this.state;
+        const {profile, isShowModal} = this.state;
+        const {currentUserId, currentUserType} = this.props;
+        const isCustomer = currentUserType === 'customer';
+
         return (
             <Row className="orders-main-container">
+                <OrderForm isShowModalTransport={isShowModal}
+                           onClose={this.closeModal}
+                           onSubmit={this.addOrder}
+                           idUser={currentUserId}
+                />
                 <Col md={12}>
                     {profile && this.checkFilledInfo()}
+                    {isCustomer && <Button onClick="">Создать заказ</Button>}
                     <Accordion>
                         <Panel eventKey="1" header="Не начатые">{this.renderTable('open')}</Panel>
                         <Panel eventKey="2" header="В процессе">{this.renderTable('in progress')}</Panel>
