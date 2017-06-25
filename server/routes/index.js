@@ -3,6 +3,7 @@ import * as usersRouters from './users';
 import * as messagesRouters from './messages';
 import * as areasRouters from './areas';
 import * as transportRouters from './transports';
+import * as ordersRouters from './orders';
 
 const router = express.Router();
 
@@ -33,7 +34,6 @@ router.post('/messages/setToOld', messagesRouters.setMessageToOld);
 router.post('/messages', messagesRouters.getMessagesByUsers);
 router.delete('/messages', messagesRouters.deleteAllMessages);
 
-
 // AREAS
 router.get('/areas', areasRouters.getAllAreas);
 router.get('/cities', areasRouters.getAllCities);
@@ -42,5 +42,13 @@ router.post('/areas', areasRouters.addArea);
 router.post('/cities', areasRouters.addCity);
 router.delete('/areas', areasRouters.deleteAllAreas);
 router.delete('/cities', areasRouters.deleteAllCities);
+
+// ORDERS
+router.get('/orders', ordersRouters.getAllOrders);
+router.get('/order/user/:type/:id', ordersRouters.getOrdersByUser);
+router.post('/orders', ordersRouters.addOrder);
+router.post('/order/:id', ordersRouters.updateOrder);
+router.delete('/order/:id', ordersRouters.deleteOrder);
+router.delete('/orders', ordersRouters.deleteAllOrders);
 
 export default router;

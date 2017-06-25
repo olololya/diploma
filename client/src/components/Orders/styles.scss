@@ -1,0 +1,17 @@
+.orders-main-container {
+
+    .well {
+        background-color: transparent;
+        border-color: #f2863e;
+    }
+
+    a {
+        color: #fff;
+    }
+
+    .nav-pills > li.active > a,
+    .nav-pills > li.active > a:hover,
+    .nav-pills > li.active > a:focus {
+        background-color: #f2863e;
+    }
+}
