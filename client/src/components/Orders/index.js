@@ -8,7 +8,8 @@ import {
     Nav,
     NavItem,
     Accordion,
-    Panel
+    Panel,
+    Button
 } from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -31,7 +32,7 @@ class Orders extends Component {
         };
 
         Utils.updateBindings(this, [
-            'checkFilledInfo', 'updateOrders'
+            'checkFilledInfo', 'updateOrders', 'showModal', 'closeModal'
         ]);
     }
 
@@ -103,14 +104,14 @@ class Orders extends Component {
 
         return (
             <Row className="orders-main-container">
-                <OrderForm isShowModalTransport={isShowModal}
+                <OrderForm isShowModal={isShowModal}
                            onClose={this.closeModal}
                            onSubmit={this.addOrder}
                            idUser={currentUserId}
                 />
                 <Col md={12}>
                     {profile && this.checkFilledInfo()}
-                    {isCustomer && <Button onClick="">Создать заказ</Button>}
+                    {isCustomer && <Button onClick={this.showModal}>Создать заказ</Button>}
                     <Accordion>
                         <Panel eventKey="1" header="Не начатые">{this.renderTable('open')}</Panel>
                         <Panel eventKey="2" header="В процессе">{this.renderTable('in progress')}</Panel>

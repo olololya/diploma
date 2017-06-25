@@ -14,4 +14,26 @@
     .nav-pills > li.active > a:focus {
         background-color: #f2863e;
     }
+
+    .field-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 60px;
+        //margin: 5px 0 5px 0 !important;
+
+        .form-control, button {
+            width: 250px;
+        }
+
+        .error-input {
+            border: 1px solid #ff9e8d;
+            background-color: #e2c6bf;
+        }
+
+    }
+
+    .container-right-text {
+        text-align: right;
+    }s
 }

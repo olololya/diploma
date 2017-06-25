@@ -11,23 +11,25 @@ import {
 import * as Utils from '../../utils.js';
 import * as _ from 'lodash';
 
-export default class TransportForm extends Component {
+export default class OrderForm extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            type: '',
-            capacity: '',
-            number: '',
-            model: '',
-            color: '',
-            date: '',
-            width: '',
-            height: '',
-            length: '',
+            description: '',
+            weight: '',
+            interval: '',
+            street: '',
+            house: '',
+            apartament: '',
+            recipientInfo: {
+                fio: '',
+                phone: ''
+            },
+            phone: '',
+            maxPrice: '',
 
-            types: [],
             intervals: [],
             weights: []
         };
@@ -36,10 +38,6 @@ export default class TransportForm extends Component {
     }
 
     componentWillMount() {
-        Utils.getFromUrlGET('http://localhost:3000/transport_types').then(types => {
-            this.setState({ types, type: types[0]._id });
-        });
-
         Utils.getFromUrlGET('http://localhost:3000/weights').then(weights => {
             this.setState({ weights, weight: weights[0]._id });
         });

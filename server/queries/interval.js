@@ -5,7 +5,7 @@ export function getAllIntervals() {
     return IntervalModel.find();
 }
 
-export function addIntervals(data) {
+export function addInterval(data) {
     const interval = new IntervalModel(data);
     return interval.save();
 }

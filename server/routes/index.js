@@ -5,6 +5,7 @@ import * as areasRouters from './areas';
 import * as transportRouters from './transports';
 import * as ordersRouters from './orders';
 import * as weightRouters from './weight';
+import * as intervalRouters from './interval';
 
 const router = express.Router();
 
@@ -56,5 +57,10 @@ router.delete('/orders', ordersRouters.deleteAllOrders);
 router.get('/weights', weightRouters.getAllWeights);
 router.post('/weight', weightRouters.addWeight);
 router.delete('/orders', weightRouters.deleteAllWeights);
+
+// INTERVAL
+router.get('/intervals', intervalRouters.getAllIntervals);
+router.post('/interval', intervalRouters.addInterval);
+router.delete('/intervals', intervalRouters.deleteAllIntervals);
 
 export default router;
