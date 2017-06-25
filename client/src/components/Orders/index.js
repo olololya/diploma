@@ -32,7 +32,7 @@ class Orders extends Component {
         };
 
         Utils.updateBindings(this, [
-            'checkFilledInfo', 'updateOrders', 'showModal', 'closeModal'
+            'checkFilledInfo', 'updateOrders', 'showModal', 'closeModal', 'addOrder'
         ]);
     }
 
@@ -94,7 +94,11 @@ class Orders extends Component {
     }
 
     addOrder(order) {
-        console.log(order);
+        const {orders} = this.state;
+        Utils.getFromUrlWithBody('http://localhost:3000/orders', order).then(() => {
+            orders.push(order);
+            this.setState({ orders });
+        });
     }
 
     render() {

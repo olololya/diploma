@@ -14,16 +14,18 @@
     .nav-pills > li.active > a:focus {
         background-color: #f2863e;
     }
+}
+
+.modal-order {
 
     .field-container {
         display: flex;
         flex-direction: row;
         align-items: center;
-        height: 60px;
-        //margin: 5px 0 5px 0 !important;
+        margin: 10px 0 !important;
 
         .form-control, button {
-            width: 250px;
+            width: 300px;
         }
 
         .error-input {
@@ -31,9 +33,10 @@
             background-color: #e2c6bf;
         }
 
+        .small-select {
+            display: inline-block;
+            width: 70px;
+            margin-left: 10px;
+        }
     }
-
-    .container-right-text {
-        text-align: right;
-    }s
 }

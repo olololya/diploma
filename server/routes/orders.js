@@ -32,10 +32,10 @@ export function getOrdersByUser(req, res) {
 
 export function addOrder(req, res) {
     queries.addOrder(req.body).then(order => {
-        res.send(order);
+        res.send({ data: order });
     }).catch(error => {
         console.log(error);
-        res.send([]);
+        res.send({ data: [] });
     });
 }
 

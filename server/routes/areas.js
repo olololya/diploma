@@ -24,7 +24,7 @@ export function getAreasByCity(req, res) {
             return queries.getAreasByCity(city._id);
         }
     }).then(areas => {
-        res.send(areas);
+        res.send({ data: areas });
     }).catch(error => {
         res.send(error);
     });
