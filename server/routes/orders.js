@@ -13,16 +13,7 @@ export function getAllOrders(req, res) {
 
 export function getOrdersByUser(req, res) {
     const {id, type} = req.params;
-    let promise = new Promise();
-    switch(type) {
-        case 'customer':
-            promise = queries.getOrdersForCustomer(id);
-            break;
-        case 'courier':
-            promise = queries.getOrdersForCourier(id);
-            break;
-    }
-    promise.then(orders => {
+    queries.getOrdersByUser(id, type).then(orders => {
         res.send(orders);
     }).catch(error => {
         console.log(error);

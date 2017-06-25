@@ -5,6 +5,12 @@ export function getAllOrders() {
     return OrderModel.find().exec();
 }
 
+export function getOrdersByUser(id, type) {
+    const field = `${type}Id`;
+    return OrderModel.find({ [field]: id });
+}
+
+
 export function getOrdersForCustomer(id) {
     return OrderModel.find({ customerId: id });
 }

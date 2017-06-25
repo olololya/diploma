@@ -6,6 +6,7 @@ import * as transportRouters from './transports';
 import * as ordersRouters from './orders';
 import * as weightRouters from './weight';
 import * as intervalRouters from './interval';
+import * as respondsRouters from './respond';
 
 const router = express.Router();
 
@@ -62,5 +63,13 @@ router.delete('/orders', weightRouters.deleteAllWeights);
 router.get('/intervals', intervalRouters.getAllIntervals);
 router.post('/interval', intervalRouters.addInterval);
 router.delete('/intervals', intervalRouters.deleteAllIntervals);
+
+// RESPONDS
+router.get('/responds', respondsRouters.getAllResponds);
+router.get('/responds/courier/:courierId', respondsRouters.getRespondsByCourier);
+router.get('/responds/order/:orderId', respondsRouters.getRespondsByOrder);
+router.post('/respond', respondsRouters.createRespond);
+router.delete('/responds', respondsRouters.deleteAllResponds);
+
 
 export default router;
