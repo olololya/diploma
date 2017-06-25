@@ -7,19 +7,19 @@ const OrderSchema = new Schema({
     courierId: {type: Schema.ObjectId, required: false, ref: 'User'},
     description: {type: String, required: true},
     maxPrice: {type: String, required: true},
-    weight: {type: String, required: true},
+    weight: {type: Schema.ObjectId, required: true, ref: 'Weight'},
     dateToSend: {type: String, required: true},
-    timeToSend: {type: String, required: true},
+    timeToSend: {type: Schema.ObjectId, required: true, ref: 'Interval'},
     sendAddress: {type: {
-        city: {type: Schema.ObjectId, required: false, ref: 'City'},
-        area: {type: Schema.ObjectId, required: false, ref: 'Area'},
+        city: {type: Schema.ObjectId, required: true, ref: 'City'},
+        area: {type: Schema.ObjectId, required: true, ref: 'Area'},
         street: {type: String, required: true},
         house: {type: String, required: true},
         apartament: {type: String, required: false}
     }, required: true},
     receiptAddress: {type: {
-        city: {type: Schema.ObjectId, required: false, ref: 'City'},
-        area: {type: Schema.ObjectId, required: false, ref: 'Area'},
+        city: {type: Schema.ObjectId, required: true, ref: 'City'},
+        area: {type: Schema.ObjectId, required: true, ref: 'Area'},
         street: {type: String, required: true},
         house: {type: String, required: true},
         apartament: {type: String, required: false}

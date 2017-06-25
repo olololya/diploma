@@ -26,21 +26,26 @@ export default class TransportForm extends Component {
             width: '',
             height: '',
             length: '',
-            types: []
+
+            types: [],
+            intervals: [],
+            weights: []
         };
-
-        listOfWeights = [{
-            name: 'Небольшой',
-            character: 'до 20кг',
-
-        }]
 
         Utils.updateBindings(this, ['onChange', 'onClickButton', 'getInput']);
     }
 
     componentWillMount() {
         Utils.getFromUrlGET('http://localhost:3000/transport_types').then(types => {
-            this.setState({ types, type: types[0].code });
+            this.setState({ types, type: types[0]._id });
+        });
+
+        Utils.getFromUrlGET('http://localhost:3000/weights').then(weights => {
+            this.setState({ weights, weight: weights[0]._id });
+        });
+
+        Utils.getFromUrlGET('http://localhost:3000/intervals').then(intervals => {
+            this.setState({ intervals, timeToSend: intervals[0]._id });
         });
     }
 
